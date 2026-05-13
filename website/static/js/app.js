@@ -52,6 +52,11 @@ createApp({
             medicamentos.value.filter(m => m.quantidade <= 0)
         );
 
+        const selectedPacienteInfo = computed(() => {
+            if (!formSaida.value.pacienteId) return null;
+            return pacientes.value.find(p => p.id === formSaida.value.pacienteId);
+        });
+
         // --- MÉTODOS DE MODAL ---
         const openModal = (tipo) => { currentModal.value = tipo; };
         const closeModal = () => { currentModal.value = null; };
@@ -127,7 +132,7 @@ createApp({
         return {
             isAuthenticated, isLoggingIn, loginForm, handleLogin, handleLogout,
             medicamentos, pacientes, movimentos, searchQuery, filteredMedicamentos, filteredPacientes,
-            medicamentosEmAlerta, medicamentosEmFalta,
+            medicamentosEmAlerta, medicamentosEmFalta, selectedPacienteInfo,
             showSidebar, activeSideTab, toggleSidebar, setSideTab,
             showA11yPanel, highContrast, fontSizeRem, toggleA11yPanel, toggleHighContrast, adjustFontSize,
             currentModal, openModal, closeModal,

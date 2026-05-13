@@ -77,8 +77,8 @@ def api_update_estoque(request):
             paciente=pac,
             quantidade=qtd,
             tipo=db_tipo,
-            endereco=data.get('endereco'),
-            telefone_contato=data.get('telefone'),
+            endereco=data.get('endereco') or (pac.endereco if pac else ''),
+            telefone_contato=data.get('telefone') or (pac.telefone if pac else ''),
             crm=data.get('crm'),
             nome_medico=data.get('nome_medico')
         )
