@@ -85,7 +85,7 @@
 
                     <div class="flex items-center gap-4">
                         <div class="relative hidden md:block">
-                            <input v-model="searchQuery" type="text" placeholder="Buscar medicamento..." class="pl-10 pr-4 py-2 bg-gray-100/50 border-none rounded-full w-64 text-sm focus:ring-2 focus:ring-blue-500/20 transition-all outline-none">
+                            <input v-model="searchQuery" type="text" :placeholder="activeSideTab === 'pacientes' ? 'Buscar paciente...' : 'Buscar medicamento...'" class="pl-10 pr-4 py-2 bg-gray-100/50 border-none rounded-full w-64 text-sm focus:ring-2 focus:ring-blue-500/20 transition-all outline-none">
                             <svg class="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                         </div>
                         <button @click="handleLogout" class="p-2 text-gray-500 hover:bg-gray-100 rounded-full transition-colors">
@@ -282,7 +282,7 @@
                                         <tr v-if="pacientes.length === 0">
                                             <td colspan="4" class="px-6 py-12 text-center text-gray-400 text-sm">Nenhum paciente cadastrado.</td>
                                         </tr>
-                                        <tr v-for="pac in pacientes" :key="pac.id" class="hover:bg-gray-50/50 transition-colors">
+                                        <tr v-for="pac in filteredPacientes" :key="pac.id" class="hover:bg-gray-50/50 transition-colors">
                                             <td class="px-6 py-4 font-semibold text-gray-900">{{ pac.nome }}</td>
                                             <td class="px-6 py-4 text-gray-600 font-mono text-sm">{{ pac.documento }}</td>
                                             <td class="px-6 py-4 text-gray-500 text-sm">{{ pac.endereco || '—' }}</td>

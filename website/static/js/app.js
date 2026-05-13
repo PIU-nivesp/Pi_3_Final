@@ -38,6 +38,12 @@ createApp({
             return medicamentos.value.filter(m => m.nome.toLowerCase().includes(q));
         });
 
+        const filteredPacientes = computed(() => {
+            if (!pacientes.value) return [];
+            const q = searchQuery.value.toLowerCase();
+            return pacientes.value.filter(p => p.nome.toLowerCase().includes(q) || p.documento.toLowerCase().includes(q));
+        });
+
         const medicamentosEmAlerta = computed(() => 
             medicamentos.value.filter(m => m.quantidade <= m.estoque_critico && m.quantidade > 0)
         );
@@ -120,7 +126,7 @@ createApp({
         // --- RETORNO PARA O TEMPLATE (CRUCIAL PARA FUNCIONAR) ---
         return {
             isAuthenticated, isLoggingIn, loginForm, handleLogin, handleLogout,
-            medicamentos, pacientes, movimentos, searchQuery, filteredMedicamentos,
+            medicamentos, pacientes, movimentos, searchQuery, filteredMedicamentos, filteredPacientes,
             medicamentosEmAlerta, medicamentosEmFalta,
             showSidebar, activeSideTab, toggleSidebar, setSideTab,
             showA11yPanel, highContrast, fontSizeRem, toggleA11yPanel, toggleHighContrast, adjustFontSize,
