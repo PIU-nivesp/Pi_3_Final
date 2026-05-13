@@ -1,5 +1,6 @@
 {
   "version": 2,
+  "buildCommand": "python manage.py migrate --noinput",
   "builds": [
     {
       "src": "core/wsgi.py",
