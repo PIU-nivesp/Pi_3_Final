@@ -16,6 +16,7 @@ urlpatterns = [
     path('api/medicamentos/estoque/', views.api_update_estoque, name='api_update_estoque'),
     path('api/pacientes/', views.api_pacientes, name='api_pacientes'),
     path('api/pacientes/novo/', views.api_save_paciente, name='api_save_paciente'),
+    path('api/pacientes/deletar/<int:id>/', views.api_delete_paciente, name='api_delete_paciente'),
     path('api/movimentacoes/', views.api_movimentacoes, name='api_movimentacoes'),
     path('run-migrations/', views.run_migrations_view, name='run_migrations'),
 ]

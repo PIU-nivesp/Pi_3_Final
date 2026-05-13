@@ -59,6 +59,13 @@ def api_save_paciente(request):
         return JsonResponse({'status': 'ok', 'id': pac.id})
 
 @csrf_exempt
+def api_delete_paciente(request, id):
+    if request.method == 'POST' or request.method == 'DELETE':
+        pac = get_object_or_404(Paciente, id=id)
+        pac.delete()
+        return JsonResponse({'status': 'ok'})
+
+@csrf_exempt
 def api_update_estoque(request):
     if request.method == 'POST':
         data = json.loads(request.body)

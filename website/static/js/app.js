@@ -104,6 +104,15 @@ createApp({
             openModal('novo-paciente');
         };
 
+        const deletePaciente = async (id) => {
+            if (confirm('Tem certeza que deseja excluir este paciente? Esta ação não pode ser desfeita.')) {
+                const res = await ApiService.deletePaciente(id);
+                if (res) {
+                    pacientes.value = await ApiService.getPacientes();
+                }
+            }
+        };
+
         const registrarEntrada = async () => {
             await ApiService.updateEstoque(formEntrada.value.medicamentoId, formEntrada.value.quantidade, 'entrada');
             await loadData();
@@ -143,7 +152,7 @@ createApp({
             showA11yPanel, highContrast, fontSizeRem, toggleA11yPanel, toggleHighContrast, adjustFontSize,
             currentModal, openModal, closeModal,
             formMedicamento, formPaciente, formEntrada, formSaida,
-            saveMedicamento, savePaciente, editPaciente, registrarEntrada, registrarSaida
+            saveMedicamento, savePaciente, editPaciente, deletePaciente, registrarEntrada, registrarSaida
         };
     }
 }).mount('#app');

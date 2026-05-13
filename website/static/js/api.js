@@ -69,6 +69,20 @@ class ApiService {
         }
     }
 
+    static async deletePaciente(id) {
+        try {
+            const response = await fetch(`/api/pacientes/deletar/${id}/`, {
+                method: 'POST',
+                headers: { 'X-CSRFToken': window.CSRF_TOKEN }
+            });
+            if (!response.ok) throw new Error('Erro ao deletar paciente');
+            return await response.json();
+        } catch (error) {
+            console.error("Erro na API:", error);
+            return null;
+        }
+    }
+
     // --- MOVIMENTAÇÕES (Entrada/Baixa) ---
     static async updateEstoque(medId, qtd, tipo, pacId = null, extraData = {}) {
         try {
