@@ -40,12 +40,22 @@ def api_save_medicamento(request):
 def api_save_paciente(request):
     if request.method == 'POST':
         data = json.loads(request.body)
-        pac = Paciente.objects.create(
-            nome=data.get('nome'),
-            documento=data.get('documento'),
-            endereco=data.get('endereco', ''),
-            telefone=data.get('telefone', '')
-        )
+        pac_id = data.get('id')
+        
+        if pac_id:
+            pac = get_object_or_404(Paciente, id=pac_id)
+            pac.nome = data.get('nome')
+            pac.documento = data.get('documento')
+            pac.endereco = data.get('endereco', pac.endereco)
+            pac.telefone = data.get('telefone', pac.telefone)
+            pac.save()
+        else:
+            pac = Paciente.objects.create(
+                nome=data.get('nome'),
+                documento=data.get('documento'),
+                endereco=data.get('endereco', ''),
+                telefone=data.get('telefone', '')
+            )
         return JsonResponse({'status': 'ok', 'id': pac.id})
 
 @csrf_exempt

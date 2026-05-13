@@ -27,7 +27,7 @@ createApp({
 
         // --- FORMULÁRIOS ---
         const formMedicamento = ref({ nome: '', dosagem: '', quantidade: 0, estoque_critico: 10 });
-        const formPaciente = ref({ nome: '', documento: '' });
+        const formPaciente = ref({ id: null, nome: '', documento: '', endereco: '', telefone: '' });
         const formEntrada = ref({ medicamentoId: '', quantidade: 1 });
         const formSaida = ref({ medicamentoId: '', pacienteId: '', quantidade: 1, endereco: '', telefone: '', crm: '', nomeMedico: '' });
 
@@ -96,6 +96,12 @@ createApp({
             // Atualiza lista de pacientes
             pacientes.value = await ApiService.getPacientes();
             closeModal();
+            formPaciente.value = { id: null, nome: '', documento: '', endereco: '', telefone: '' };
+        };
+
+        const editPaciente = (pac) => {
+            formPaciente.value = { ...pac };
+            openModal('novo-paciente');
         };
 
         const registrarEntrada = async () => {
@@ -137,7 +143,7 @@ createApp({
             showA11yPanel, highContrast, fontSizeRem, toggleA11yPanel, toggleHighContrast, adjustFontSize,
             currentModal, openModal, closeModal,
             formMedicamento, formPaciente, formEntrada, formSaida,
-            saveMedicamento, savePaciente, registrarEntrada, registrarSaida
+            saveMedicamento, savePaciente, editPaciente, registrarEntrada, registrarSaida
         };
     }
 }).mount('#app');
