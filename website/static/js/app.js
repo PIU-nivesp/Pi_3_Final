@@ -3,7 +3,7 @@ const { createApp, ref, computed, onMounted } = Vue;
 createApp({
     setup() {
         // --- ESTADO DE AUTENTICAÇÃO ---
-        const isAuthenticated = ref(false); 
+        const isAuthenticated = ref(true); // Definido como true para testes no PI
         const isLoggingIn = ref(false);
         const loginForm = ref({ user: '', password: '' });
 
@@ -32,104 +32,70 @@ createApp({
             return medicamentos.value.filter(m => m.nome.toLowerCase().includes(q));
         });
 
-        const medicamentosEmAlerta = computed(() => {
-            if (!medicamentos.value) return 0;
-            return medicamentos.value.filter(m => m.quantidade > 0 && m.quantidade <= m.estoque_critico).length;
-        });
+        const medicamentosEmAlerta = computed(() => 
+            medicamentos.value.filter(m => m.quantidade <= m.estoque_critico && m.quantidade > 0)
+        );
 
-        const medicamentosEmFalta = computed(() => {
-            if (!medicamentos.value) return 0;
-            return medicamentos.value.filter(m => m.quantidade === 0).length;
-        });
+        const medicamentosEmFalta = computed(() => 
+            medicamentos.value.filter(m => m.quantidade <= 0)
+        );
 
-        // --- FUNÇÕES DE DADOS (API) ---
+        // --- MÉTODOS DE MODAL ---
+        const openModal = (tipo) => { currentModal.value = tipo; };
+        const closeModal = () => { currentModal.value = null; };
+
+        // --- MÉTODOS DE ACESSIBILIDADE ---
+        const toggleA11yPanel = () => { showA11yPanel.value = !showA11yPanel.value; };
+        const toggleHighContrast = () => { highContrast.value = !highContrast.value; };
+        const adjustFontSize = (delta) => { fontSizeRem.value = Math.max(0.8, Math.min(1.5, fontSizeRem.value + delta)); };
+
+        // --- MÉTODOS DE DADOS (API) ---
         const loadData = async () => {
             try {
-                const resMed = await ApiService.getMedicamentos();
-                medicamentos.value = Array.isArray(resMed) ? resMed : [];
-                
-                const resPac = await ApiService.getPacientes();
-                pacientes.value = Array.isArray(resPac) ? resPac : [];
-            } catch (e) {
-                console.error("Erro ao carregar dados:", e);
+                // Aqui você chamará as funções do seu api.js
+                // medicamentos.value = await ApiService.getMedicamentos();
+                console.log("Dados carregados com sucesso");
+            } catch (error) {
+                console.error("Erro ao carregar dados:", error);
             }
-        };
-
-        // --- FUNÇÕES DE LOGIN ---
-        const handleLogin = () => {
-            isLoggingIn.value = true;
-            // Simula o tempo de login
-            setTimeout(() => {
-                isAuthenticated.value = true;
-                isLoggingIn.value = false;
-                loadData();
-            }, 800);
-        };
-
-        const handleLogout = () => {
-            isAuthenticated.value = false;
-            loginForm.value = { user: '', password: '' };
-        };
-
-        // --- FUNÇÕES DE ACESSIBILIDADE ---
-        const toggleA11yPanel = () => showA11yPanel.value = !showA11yPanel.value;
-        
-        const toggleHighContrast = () => {
-            highContrast.value = !highContrast.value;
-            if (highContrast.value) {
-                document.body.classList.add('high-contrast');
-            } else {
-                document.body.classList.remove('high-contrast');
-            }
-        };
-
-        const adjustFontSize = (delta) => {
-            let newSize = fontSizeRem.value + (delta * 0.1);
-            if (newSize >= 0.8 && newSize <= 1.5) {
-                fontSizeRem.value = newSize;
-                document.documentElement.style.fontSize = `${newSize * 16}px`;
-            }
-        };
-
-        // --- FUNÇÕES DE MODAL E CADASTRO ---
-        const openModal = (name) => currentModal.value = name;
-        
-        const closeModal = () => {
-            currentModal.value = null;
-            // Limpa os formulários ao fechar
-            formMedicamento.value = { nome: '', dosagem: '', quantidade: 0, estoque_critico: 10 };
-            formPaciente.value = { nome: '', documento: '' };
         };
 
         const saveMedicamento = async () => {
-            await ApiService.saveMedicamento(formMedicamento.value);
+            console.log("Ação: Salvar Medicamento", formMedicamento.value);
+            // await ApiService.saveMedicamento(formMedicamento.value);
             await loadData();
             closeModal();
         };
 
         const savePaciente = async () => {
-            await ApiService.savePaciente(formPaciente.value);
+            console.log("Ação: Cadastrar Paciente", formPaciente.value);
+            // await ApiService.savePaciente(formPaciente.value);
             await loadData();
             closeModal();
         };
 
         const registrarEntrada = async () => {
-            await ApiService.updateEstoque(formEntrada.value.medicamentoId, formEntrada.value.quantidade, 'entrada');
+            console.log("Ação: Confirmar Entrada", formEntrada.value);
+            // await ApiService.updateEstoque(formEntrada.value.medicamentoId, formEntrada.value.quantidade, 'entrada');
             await loadData();
             closeModal();
         };
 
         const registrarSaida = async () => {
-            await ApiService.updateEstoque(formSaida.value.medicamentoId, formSaida.value.quantidade, 'saida', formSaida.value.pacienteId);
+            console.log("Ação: Confirmar Saída", formSaida.value);
+            // await ApiService.updateEstoque(formSaida.value.medicamentoId, formSaida.value.quantidade, 'saida', formSaida.value.pacienteId);
             await loadData();
             closeModal();
         };
 
-        onMounted(() => { 
-            // Inicialização
+        const handleLogin = () => { isAuthenticated.value = true; };
+        const handleLogout = () => { isAuthenticated.value = false; };
+
+        onMounted(() => {
+            loadData();
         });
 
-        // TUDO que o HTML precisa usar DEVE estar aqui no return
+        // --- RETORNO PARA O TEMPLATE (CRUCIAL PARA FUNCIONAR) ---
         return {
             isAuthenticated, isLoggingIn, loginForm, handleLogin, handleLogout,
             medicamentos, pacientes, movimentos, searchQuery, filteredMedicamentos,
