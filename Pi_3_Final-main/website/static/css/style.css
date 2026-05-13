@@ -1,0 +1,95 @@
+/* 
+    CAPS - Gestão de Farmácia
+    Sistema de Estilos e Design System
+*/
+
+body {
+    background-color: #f5f5f7;
+    color: #1d1d1f;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Modo de Alto Contraste */
+.high-contrast {
+    background-color: #000000 !important;
+    color: #ffffff !important;
+}
+
+.high-contrast .bg-white, 
+.high-contrast .bg-white\/80,
+.high-contrast .bg-white\/90 {
+    background-color: #121212 !important;
+    border: 1px solid #333 !important;
+}
+
+.high-contrast .text-apple-500, 
+.high-contrast .text-gray-900, 
+.high-contrast .text-gray-800, 
+.high-contrast .text-gray-700 {
+    color: #ffffff !important;
+}
+
+.high-contrast .text-gray-500, 
+.high-contrast .text-gray-600 {
+    color: #cccccc !important;
+}
+
+.high-contrast .border-gray-200, 
+.high-contrast .border-gray-100 {
+    border-color: #333 !important;
+}
+
+.high-contrast table th {
+    background-color: #222 !important;
+    color: #fff !important;
+}
+
+.high-contrast table td {
+    border-bottom: 1px solid #333 !important;
+}
+
+.high-contrast input, 
+.high-contrast select {
+    background-color: #1a1a1a !important;
+    color: #fff !important;
+    border-color: #444 !important;
+}
+
+/* Desativa animações complexas no modo de alto contraste para melhor performance/leitura */
+.high-contrast .animate-blob {
+    display: none !important;
+}
+
+/* Scrollbar Personalizada (Estilo Apple) */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #d2d2d7;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #86868b;
+}
+
+/* Utilidades Vue */
+[v-cloak] {
+    display: none;
+}
+
+/* Efeitos de Vidro (Frosted Glass) */
+.modal-overlay {
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+.animation-delay-2000 {
+    animation-delay: 2s;
+}
