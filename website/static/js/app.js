@@ -52,9 +52,10 @@ createApp({
         // --- MÉTODOS DE DADOS (API) ---
         const loadData = async () => {
             try {
-                // Aqui você chamará as funções do seu api.js
-                // medicamentos.value = await ApiService.getMedicamentos();
-                console.log("Dados carregados com sucesso");
+                // Agora ele busca do banco real via ApiService
+                const dados = await ApiService.getMedicamentos();
+                medicamentos.value = dados; 
+                console.log("Dados carregados do Neon:", dados);
             } catch (error) {
                 console.error("Erro ao carregar dados:", error);
             }
