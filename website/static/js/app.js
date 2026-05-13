@@ -16,7 +16,7 @@ createApp({
 
         // --- SIDEBAR ---
         const showSidebar = ref(true);
-        const activeSideTab = ref('medicamentos'); // 'medicamentos' | 'pacientes'
+        const activeSideTab = ref('dashboard'); // 'dashboard' | 'medicamentos' | 'pacientes'
         const toggleSidebar = () => { showSidebar.value = !showSidebar.value; };
         const setSideTab = (tab) => { activeSideTab.value = tab; showSidebar.value = true; };
 
