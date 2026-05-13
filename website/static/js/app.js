@@ -23,7 +23,7 @@ createApp({
         const formMedicamento = ref({ nome: '', dosagem: '', quantidade: 0, estoque_critico: 10 });
         const formPaciente = ref({ nome: '', documento: '' });
         const formEntrada = ref({ medicamentoId: '', quantidade: 1 });
-        const formSaida = ref({ medicamentoId: '', pacienteId: '', quantidade: 1 });
+        const formSaida = ref({ medicamentoId: '', pacienteId: '', quantidade: 1, endereco: '', telefone: '', crm: '', nomeMedico: '' });
 
         // --- COMPUTED PROPERTIES ---
         const filteredMedicamentos = computed(() => {
@@ -52,46 +52,48 @@ createApp({
         // --- MÉTODOS DE DADOS (API) ---
         const loadData = async () => {
             try {
-                console.log("Iniciando busca de dados...");
-                // Adicionamos uma verificação para garantir que o ApiService existe
                 if (typeof ApiService !== 'undefined') {
                     const dados = await ApiService.getMedicamentos();
-                    // Garante que 'dados' seja sempre um array para o .filter não quebrar
                     medicamentos.value = Array.isArray(dados) ? dados : [];
-                    console.log("Dados carregados com sucesso:", medicamentos.value);
-                } else {
-                    console.error("Erro: ApiService ainda não foi carregado.");
                 }
             } catch (error) {
                 console.error("Erro ao carregar dados:", error);
-                medicamentos.value = []; // Evita que o filter quebre
+                medicamentos.value = [];
             }
         };
 
         const saveMedicamento = async () => {
-            console.log("Ação: Salvar Medicamento", formMedicamento.value);
-            // await ApiService.saveMedicamento(formMedicamento.value);
+            await ApiService.saveMedicamento(formMedicamento.value);
             await loadData();
             closeModal();
         };
 
         const savePaciente = async () => {
-            console.log("Ação: Cadastrar Paciente", formPaciente.value);
-            // await ApiService.savePaciente(formPaciente.value);
-            await loadData();
+            await ApiService.savePaciente(formPaciente.value);
+            // Atualiza lista de pacientes
+            pacientes.value = await ApiService.getPacientes();
             closeModal();
         };
 
         const registrarEntrada = async () => {
-            console.log("Ação: Confirmar Entrada", formEntrada.value);
-            // await ApiService.updateEstoque(formEntrada.value.medicamentoId, formEntrada.value.quantidade, 'entrada');
+            await ApiService.updateEstoque(formEntrada.value.medicamentoId, formEntrada.value.quantidade, 'entrada');
             await loadData();
             closeModal();
         };
 
         const registrarSaida = async () => {
-            console.log("Ação: Confirmar Saída", formSaida.value);
-            // await ApiService.updateEstoque(formSaida.value.medicamentoId, formSaida.value.quantidade, 'saida', formSaida.value.pacienteId);
+            await ApiService.updateEstoque(
+                formSaida.value.medicamentoId, 
+                formSaida.value.quantidade, 
+                'saida', 
+                formSaida.value.pacienteId,
+                {
+                    endereco: formSaida.value.endereco,
+                    telefone: formSaida.value.telefone,
+                    crm: formSaida.value.crm,
+                    nome_medico: formSaida.value.nomeMedico
+                }
+            );
             await loadData();
             closeModal();
         };

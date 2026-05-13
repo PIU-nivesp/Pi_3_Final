@@ -70,7 +70,7 @@ class ApiService {
     }
 
     // --- MOVIMENTAÇÕES (Entrada/Baixa) ---
-    static async updateEstoque(medId, qtd, tipo, pacId = null) {
+    static async updateEstoque(medId, qtd, tipo, pacId = null, extraData = {}) {
         try {
             const response = await fetch(`/api/medicamentos/estoque/`, {
                 method: 'POST',
@@ -82,7 +82,8 @@ class ApiService {
                     medicamento_id: medId,
                     quantidade: qtd,
                     tipo: tipo,
-                    paciente_id: pacId
+                    paciente_id: pacId,
+                    ...extraData
                 })
             });
             if (!response.ok) {

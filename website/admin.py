@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Medicamento, Paciente
+from .models import Medicamento, Paciente, Movimentacao
 
 @admin.register(Medicamento)
 class MedicamentoAdmin(admin.ModelAdmin):
@@ -8,5 +8,10 @@ class MedicamentoAdmin(admin.ModelAdmin):
 
 @admin.register(Paciente)
 class PacienteAdmin(admin.ModelAdmin):
-    list_display = ('nome', 'documento')
+    list_display = ('nome', 'documento', 'telefone')
     search_fields = ('nome', 'documento')
+
+@admin.register(Movimentacao)
+class MovimentacaoAdmin(admin.ModelAdmin):
+    list_display = ('data', 'tipo', 'medicamento', 'paciente', 'quantidade')
+    list_filter = ('tipo', 'data')

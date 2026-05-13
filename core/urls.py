@@ -12,7 +12,9 @@ urlpatterns = [
     # --- ROTAS DE API (Ponte para o Vue.js) ---
     # Endereço: localhost:8000/api/medicamentos/
     path('api/medicamentos/', views.api_medicamentos, name='api_medicamentos'),
-    
-    # Endereço: localhost:8000/api/pacientes/
+    path('api/medicamentos/novo/', views.api_save_medicamento, name='api_save_medicamento'),
+    path('api/medicamentos/estoque/', views.api_update_estoque, name='api_update_estoque'),
     path('api/pacientes/', views.api_pacientes, name='api_pacientes'),
+    path('api/pacientes/novo/', views.api_save_paciente, name='api_save_paciente'),
+    path('api/movimentacoes/', views.api_movimentacoes, name='api_movimentacoes'),
 ]
