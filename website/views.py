@@ -2,6 +2,8 @@ import json
 from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from django.core.management import call_command
+from io import StringIO
 from .models import Medicamento, Paciente, Movimentacao
 
 # 1. Renderiza a página HTML
@@ -82,3 +84,12 @@ def api_update_estoque(request):
         )
 
         return JsonResponse({'status': 'ok', 'nova_quantidade': med.quantidade})
+
+def run_migrations_view(request):
+    out = StringIO()
+    try:
+        call_command('migrate', interactive=False, stdout=out)
+        result = out.getvalue()
+        return JsonResponse({'status': 'success', 'output': result})
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)})
