@@ -52,12 +52,19 @@ createApp({
         // --- MÉTODOS DE DADOS (API) ---
         const loadData = async () => {
             try {
-                // Agora ele busca do banco real via ApiService
-                const dados = await ApiService.getMedicamentos();
-                medicamentos.value = dados; 
-                console.log("Dados carregados do Neon:", dados);
+                console.log("Iniciando busca de dados...");
+                // Adicionamos uma verificação para garantir que o ApiService existe
+                if (typeof ApiService !== 'undefined') {
+                    const dados = await ApiService.getMedicamentos();
+                    // Garante que 'dados' seja sempre um array para o .filter não quebrar
+                    medicamentos.value = Array.isArray(dados) ? dados : [];
+                    console.log("Dados carregados com sucesso:", medicamentos.value);
+                } else {
+                    console.error("Erro: ApiService ainda não foi carregado.");
+                }
             } catch (error) {
                 console.error("Erro ao carregar dados:", error);
+                medicamentos.value = []; // Evita que o filter quebre
             }
         };
 
@@ -92,8 +99,12 @@ createApp({
         const handleLogin = () => { isAuthenticated.value = true; };
         const handleLogout = () => { isAuthenticated.value = false; };
 
-        onMounted(() => {
-            loadData();
+        onMounted(async () => {
+            await loadData();
+            // Força o carregamento dos pacientes também
+            if (typeof ApiService !== 'undefined') {
+                pacientes.value = await ApiService.getPacientes();
+            }
         });
 
         // --- RETORNO PARA O TEMPLATE (CRUCIAL PARA FUNCIONAR) ---
