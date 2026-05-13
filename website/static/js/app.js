@@ -14,6 +14,12 @@ createApp({
         const searchQuery = ref('');
         const currentModal = ref(null);
 
+        // --- SIDEBAR ---
+        const showSidebar = ref(true);
+        const activeSideTab = ref('medicamentos'); // 'medicamentos' | 'pacientes'
+        const toggleSidebar = () => { showSidebar.value = !showSidebar.value; };
+        const setSideTab = (tab) => { activeSideTab.value = tab; showSidebar.value = true; };
+
         // --- ACESSIBILIDADE ---
         const showA11yPanel = ref(false);
         const highContrast = ref(false);
@@ -53,12 +59,18 @@ createApp({
         const loadData = async () => {
             try {
                 if (typeof ApiService !== 'undefined') {
-                    const dados = await ApiService.getMedicamentos();
-                    medicamentos.value = Array.isArray(dados) ? dados : [];
+                    // Carrega ambas as listas em paralelo para manter o sidebar sincronizado
+                    const [meds, pacs] = await Promise.all([
+                        ApiService.getMedicamentos(),
+                        ApiService.getPacientes()
+                    ]);
+                    medicamentos.value = Array.isArray(meds) ? meds : [];
+                    pacientes.value = Array.isArray(pacs) ? pacs : [];
                 }
             } catch (error) {
                 console.error("Erro ao carregar dados:", error);
                 medicamentos.value = [];
+                pacientes.value = [];
             }
         };
 
@@ -103,17 +115,14 @@ createApp({
 
         onMounted(async () => {
             await loadData();
-            // Força o carregamento dos pacientes também
-            if (typeof ApiService !== 'undefined') {
-                pacientes.value = await ApiService.getPacientes();
-            }
         });
 
         // --- RETORNO PARA O TEMPLATE (CRUCIAL PARA FUNCIONAR) ---
         return {
             isAuthenticated, isLoggingIn, loginForm, handleLogin, handleLogout,
             medicamentos, pacientes, movimentos, searchQuery, filteredMedicamentos,
-            medicamentosEmAlerta, medicamentosEmFalta, 
+            medicamentosEmAlerta, medicamentosEmFalta,
+            showSidebar, activeSideTab, toggleSidebar, setSideTab,
             showA11yPanel, highContrast, fontSizeRem, toggleA11yPanel, toggleHighContrast, adjustFontSize,
             currentModal, openModal, closeModal,
             formMedicamento, formPaciente, formEntrada, formSaida,
