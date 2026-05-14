@@ -19,7 +19,13 @@ createApp({
         const showSidebar = ref(true);
         const activeSideTab = ref('dashboard'); // 'dashboard' | 'medicamentos' | 'pacientes'
         const toggleSidebar = () => { showSidebar.value = !showSidebar.value; };
-        const setSideTab = (tab) => { activeSideTab.value = tab; showSidebar.value = true; };
+        const setSideTab = (tab) => { 
+            activeSideTab.value = tab; 
+            // Fecha a sidebar ao clicar em um item no mobile
+            if (window.innerWidth < 768) {
+                showSidebar.value = false;
+            }
+        };
 
         // --- ACESSIBILIDADE ---
         const showA11yPanel = ref(false);

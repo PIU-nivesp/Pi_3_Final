@@ -85,7 +85,7 @@
                         <button @click="toggleSidebar" class="p-2 text-gray-500 hover:bg-gray-100 rounded-lg transition-colors mr-1" title="Menu lateral">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                         </button>
-                        <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center shadow-md shadow-blue-100">
+                        <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center shadow-md shadow-blue-100 shrink-0">
                             <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
                         </div>
                         <span class="font-bold text-gray-900 hidden sm:block">Farmácia CAPS</span>
@@ -105,6 +105,9 @@
 
             <!-- LAYOUT PRINCIPAL: sidebar + conteúdo -->
             <div class="main-layout">
+                <!-- Sidebar Overlay for Mobile -->
+                <div v-if="showSidebar" @click="toggleSidebar" class="md:hidden fixed inset-0 bg-black/40 backdrop-blur-[2px] z-40"></div>
+                
                 <!-- ===== MENU LATERAL (navegação) ===== -->
                 <aside :class="['sidebar', showSidebar ? 'sidebar--open' : 'sidebar--closed']">
                     <div class="sidebar-nav">
@@ -405,8 +408,9 @@
 
         <Teleport to="body">
             <div v-if="currentModal" class="fixed inset-0 z-[60] flex items-center justify-center p-4">
-                <div class="absolute inset-0 bg-gray-900/40 backdrop-blur-sm modal-overlay"></div>
-                <div :class="['relative w-full bg-white p-8 rounded-md shadow-apple-lg modal-content', currentModal === 'visualizar-relatorio' ? 'max-w-4xl print-area' : 'max-w-lg']">
+                <div @click="closeModal" class="absolute inset-0 bg-gray-900/40 backdrop-blur-sm modal-overlay"></div>
+                
+                <div :class="['relative w-full bg-white p-6 sm:p-8 rounded-md shadow-apple-lg modal-content', currentModal === 'visualizar-relatorio' ? 'max-w-4xl print-area' : 'max-w-lg']">
                     <div class="flex justify-between items-center mb-6 print-hidden">
                         <h3 class="text-xl font-bold text-gray-900">
                             <span v-if="currentModal === 'novo-medicamento'">Cadastrar Medicamento</span>
