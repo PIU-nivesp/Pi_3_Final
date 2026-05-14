@@ -247,8 +247,8 @@ body {
 }
 
 .sidebar-nav-item--active {
-    background: #eff6ff;
-    color: #2563eb;
+    background: #ecfeff;
+    color: #0891b2;
 }
 
 .sidebar-nav-item--active:hover {
@@ -266,7 +266,7 @@ body {
 }
 
 .sidebar-nav-item--active .sidebar-nav-badge {
-    background: #2563eb;
+    background: #0891b2;
     color: #ffffff;
 }
 
