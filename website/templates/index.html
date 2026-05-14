@@ -480,30 +480,50 @@
                     </div>
 
                     <form v-if="currentModal === 'novo-medicamento'" @submit.prevent="saveMedicamento" class="space-y-4">
-                        <input v-model="formMedicamento.nome" type="text" placeholder="Nome do Medicamento" required class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-md outline-none focus:ring-2 focus:ring-blue-500/20">
-                        <input v-model="formMedicamento.dosagem" type="text" placeholder="Dosagem (ex: 50mg)" required class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-md outline-none focus:ring-2 focus:ring-blue-500/20">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase mb-1 px-1">Nome do Medicamento</label>
+                            <input v-model="formMedicamento.nome" type="text" placeholder="Ex: Paracetamol" required class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-md outline-none focus:ring-2 focus:ring-blue-500/20">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase mb-1 px-1">Dosagem</label>
+                            <input v-model="formMedicamento.dosagem" type="text" placeholder="Ex: 500mg" required class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-md outline-none focus:ring-2 focus:ring-blue-500/20">
+                        </div>
+
                         <div class="grid grid-cols-2 gap-4">
                             <div>
-                                <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1 px-1">Quantidade Total</label>
-                                <input v-model.number="formMedicamento.quantidade" type="number" placeholder="Quantidade inicial" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-md outline-none">
+                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1 px-1">Quantidade em Estoque</label>
+                                <input v-model.number="formMedicamento.quantidade" type="number" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-md outline-none">
                             </div>
                             <div>
-                                <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1 px-1">Qtd. Mínima para Alerta</label>
-                                <input v-model.number="formMedicamento.estoque_critico" type="number" placeholder="Nível de alerta" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-md outline-none">
+                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1 px-1">Qtd. Alerta (Mínima)</label>
+                                <input v-model.number="formMedicamento.estoque_critico" type="number" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-md outline-none">
                             </div>
                         </div>
+
                         <div class="grid grid-cols-2 gap-4">
-                            <select v-model="formMedicamento.tipo" class="px-4 py-3 bg-gray-50 border border-gray-200 rounded-md outline-none">
-                                <option value="COMPRIMIDO">Comprimido</option>
-                                <option value="GOTA">Gota</option>
-                            </select>
-                            <select v-model="formMedicamento.unidade_dosagem" class="px-4 py-3 bg-gray-50 border border-gray-200 rounded-md outline-none">
-                                <option value="MG">mg</option>
-                                <option value="ML">ml</option>
-                                <option value="CAPSULA">Cápsula</option>
-                            </select>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1 px-1">Tipo</label>
+                                <select v-model="formMedicamento.tipo" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-md outline-none">
+                                    <option value="COMPRIMIDO">Comprimido</option>
+                                    <option value="GOTA">Gota</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1 px-1">Unidade</label>
+                                <select v-model="formMedicamento.unidade_dosagem" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-md outline-none">
+                                    <option value="MG">mg</option>
+                                    <option value="ML">ml</option>
+                                    <option value="CAPSULA">Cápsula</option>
+                                </select>
+                            </div>
                         </div>
-                        <input v-model.number="formMedicamento.quantidade_por_caixa" type="number" placeholder="Quantidade por Caixa" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-md outline-none">
+
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase mb-1 px-1">Quantidade por Caixa (Unidades)</label>
+                            <input v-model.number="formMedicamento.quantidade_por_caixa" type="number" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-md outline-none">
+                        </div>
+
                         <div class="flex justify-end gap-3 pt-4">
                             <button type="button" @click="closeModal" class="px-6 py-2.5 text-gray-500 font-medium hover:bg-gray-100 rounded-md transition-all">Cancelar</button>
                             <button type="submit" class="px-6 py-2.5 bg-blue-600 text-white font-bold rounded-md shadow-lg shadow-blue-100 hover:bg-blue-700 active:scale-95 transition-all">Salvar Registro</button>
@@ -568,10 +588,16 @@
                             </div>
                         </div>
 
-                        <input v-model="formEntrada.fabricante" type="text" placeholder="Fabricante" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-md outline-none">
+                        <div>
+                            <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Fabricante</label>
+                            <input v-model="formEntrada.fabricante" type="text" placeholder="Ex: Medley, EMS..." class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-md outline-none">
+                        </div>
                         
                         <div class="grid grid-cols-2 gap-4">
-                            <input v-model="formEntrada.lote" type="text" placeholder="Lote" class="px-4 py-3 bg-gray-50 border border-gray-200 rounded-md outline-none">
+                            <div>
+                                <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Lote</label>
+                                <input v-model="formEntrada.lote" type="text" placeholder="Número do Lote" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-md outline-none">
+                            </div>
                             <div class="relative">
                                 <label class="absolute -top-2 left-2 px-1 bg-white text-[10px] font-bold text-gray-400">Validade</label>
                                 <input v-model="formEntrada.validade" type="date" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-md outline-none">
