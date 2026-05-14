@@ -23,8 +23,24 @@ createApp({
 
         // --- ACESSIBILIDADE ---
         const showA11yPanel = ref(false);
-        const highContrast = ref(false);
-        const fontSizeRem = ref(1);
+        const colorMode = ref(localStorage.getItem('caps-a11y-color') || 'default');
+        const fontSizeRem = ref(parseFloat(localStorage.getItem('caps-a11y-font-size')) || 1);
+        const isBold = ref(localStorage.getItem('caps-a11y-bold') === 'true');
+
+        const applyA11y = () => {
+            const html = document.documentElement;
+            html.classList.remove('high-contrast', 'monochrome', 'bold-text');
+            
+            if (colorMode.value === 'high-contrast') html.classList.add('high-contrast');
+            if (colorMode.value === 'monochrome') html.classList.add('monochrome');
+            if (isBold.value) html.classList.add('bold-text');
+            
+            html.style.fontSize = fontSizeRem.value + 'rem';
+            
+            localStorage.setItem('caps-a11y-color', colorMode.value);
+            localStorage.setItem('caps-a11y-font-size', fontSizeRem.value);
+            localStorage.setItem('caps-a11y-bold', isBold.value);
+        };
 
         // --- FORMULÁRIOS ---
         const formMedicamento = ref({ nome: '', dosagem: '', quantidade: 0, estoque_critico: 10 });
@@ -66,8 +82,13 @@ createApp({
 
         // --- MÉTODOS DE ACESSIBILIDADE ---
         const toggleA11yPanel = () => { showA11yPanel.value = !showA11yPanel.value; };
-        const toggleHighContrast = () => { highContrast.value = !highContrast.value; };
-        const adjustFontSize = (delta) => { fontSizeRem.value = Math.max(0.8, Math.min(1.5, fontSizeRem.value + delta)); };
+        const setColorMode = (mode) => { colorMode.value = mode; applyA11y(); };
+        const toggleBold = () => { isBold.value = !isBold.value; applyA11y(); };
+        const adjustFontSize = (delta) => { 
+            fontSizeRem.value = Math.round((fontSizeRem.value + delta) * 10) / 10;
+            fontSizeRem.value = Math.max(0.8, Math.min(1.5, fontSizeRem.value)); 
+            applyA11y();
+        };
 
         // --- MÉTODOS DE DADOS (API) ---
         const loadData = async () => {
@@ -198,6 +219,7 @@ createApp({
         const handleLogout = () => { isAuthenticated.value = false; };
 
         onMounted(async () => {
+            applyA11y();
             await loadData();
         });
 
@@ -207,7 +229,7 @@ createApp({
             medicamentos, pacientes, movimentos, searchQuery, filteredMedicamentos, filteredPacientes,
             medicamentosEmAlerta, medicamentosEmFalta, selectedPacienteInfo,
             showSidebar, activeSideTab, toggleSidebar, setSideTab,
-            showA11yPanel, highContrast, fontSizeRem, toggleA11yPanel, toggleHighContrast, adjustFontSize,
+            showA11yPanel, colorMode, fontSizeRem, isBold, toggleA11yPanel, setColorMode, toggleBold, adjustFontSize,
             currentModal, openModal, closeModal,
             formMedicamento, formPaciente, formEntrada, formSaida, formRelatorio, relatorioAberto,
             relatorios, gerarRelatorio, abrirRelatorio, printRelatorio,

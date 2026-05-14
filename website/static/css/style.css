@@ -9,56 +9,66 @@ body {
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Modo de Alto Contraste */
+/* =============================================
+   SISTEMA DE ACESSIBILIDADE
+   ============================================= */
+
+/* Alto Contraste */
 .high-contrast {
     background-color: #000000 !important;
     color: #ffffff !important;
 }
-
 .high-contrast .bg-white, 
 .high-contrast .bg-white\/80,
+.high-contrast .bg-white\/70,
 .high-contrast .bg-white\/90 {
     background-color: #121212 !important;
     border: 1px solid #333 !important;
 }
-
-.high-contrast .text-apple-500, 
 .high-contrast .text-gray-900, 
 .high-contrast .text-gray-800, 
-.high-contrast .text-gray-700 {
+.high-contrast .text-gray-700,
+.high-contrast .text-gray-600,
+.high-contrast .text-gray-500,
+.high-contrast span,
+.high-contrast h1,
+.high-contrast h2,
+.high-contrast h3,
+.high-contrast p {
     color: #ffffff !important;
 }
-
-.high-contrast .text-gray-500, 
-.high-contrast .text-gray-600 {
-    color: #cccccc !important;
-}
-
 .high-contrast .border-gray-200, 
 .high-contrast .border-gray-100 {
-    border-color: #333 !important;
+    border-color: #444 !important;
 }
-
-.high-contrast table th {
-    background-color: #222 !important;
-    color: #fff !important;
-}
-
-.high-contrast table td {
-    border-bottom: 1px solid #333 !important;
-}
-
-.high-contrast input, 
-.high-contrast select {
+.high-contrast table th { background-color: #222 !important; color: #fff !important; }
+.high-contrast table td { border-bottom: 1px solid #333 !important; }
+.high-contrast input, .high-contrast select {
     background-color: #1a1a1a !important;
     color: #fff !important;
     border-color: #444 !important;
 }
+.high-contrast .animate-blob { display: none !important; }
 
-/* Desativa animações complexas no modo de alto contraste para melhor performance/leitura */
-.high-contrast .animate-blob {
-    display: none !important;
+/* Monocromático */
+.monochrome {
+    filter: grayscale(100%) !important;
 }
+
+/* Peso da Fonte */
+.bold-text body, 
+.bold-text button, 
+.bold-text input, 
+.bold-text select, 
+.bold-text p,
+.bold-text span,
+.bold-text div,
+.bold-text h1,
+.bold-text h2,
+.bold-text h3 {
+    font-weight: 700 !important;
+}
+
 
 /* Scrollbar Personalizada (Estilo Apple) */
 ::-webkit-scrollbar {
