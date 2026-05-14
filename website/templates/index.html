@@ -483,8 +483,14 @@
                         <input v-model="formMedicamento.nome" type="text" placeholder="Nome do Medicamento" required class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-md outline-none focus:ring-2 focus:ring-blue-500/20">
                         <input v-model="formMedicamento.dosagem" type="text" placeholder="Dosagem (ex: 50mg)" required class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-md outline-none focus:ring-2 focus:ring-blue-500/20">
                         <div class="grid grid-cols-2 gap-4">
-                            <input v-model.number="formMedicamento.quantidade" type="number" placeholder="Quantidade inicial" class="px-4 py-3 bg-gray-50 border border-gray-200 rounded-md outline-none">
-                            <input v-model.number="formMedicamento.estoque_critico" type="number" placeholder="Nível de alerta" class="px-4 py-3 bg-gray-50 border border-gray-200 rounded-md outline-none">
+                            <div>
+                                <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1 px-1">Quantidade Total</label>
+                                <input v-model.number="formMedicamento.quantidade" type="number" placeholder="Quantidade inicial" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-md outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1 px-1">Qtd. Mínima para Alerta</label>
+                                <input v-model.number="formMedicamento.estoque_critico" type="number" placeholder="Nível de alerta" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-md outline-none">
+                            </div>
                         </div>
                         <div class="grid grid-cols-2 gap-4">
                             <select v-model="formMedicamento.tipo" class="px-4 py-3 bg-gray-50 border border-gray-200 rounded-md outline-none">
