@@ -645,6 +645,22 @@
                             <label class="block text-xs font-bold text-gray-500 uppercase mb-1 px-1">Quantidade a Retirar</label>
                             <input v-model.number="formSaida.quantidade" type="number" min="1" placeholder="Quantidade" required class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-md outline-none">
                         </div>
+
+                        <!-- Lógica de Caixas (Calculadora Reversa) -->
+                        <div v-if="calcularCaixasSaida && (calcularCaixasSaida.caixas > 0 || calcularCaixasSaida.resto > 0)" class="p-3 bg-amber-50 border border-amber-100 rounded-lg animate-in fade-in slide-in-from-top-1 duration-200">
+                            <div class="flex items-center gap-2 text-amber-800">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
+                                <span class="text-xs font-bold uppercase">Orientação de Retirada</span>
+                            </div>
+                            <p class="text-sm mt-1 text-amber-900">
+                                Entregar: 
+                                <strong v-if="calcularCaixasSaida.caixas > 0">{{ calcularCaixasSaida.caixas }} caixa(s)</strong>
+                                <span v-if="calcularCaixasSaida.caixas > 0 && calcularCaixasSaida.resto > 0"> e </span>
+                                <strong v-if="calcularCaixasSaida.resto > 0">{{ calcularCaixasSaida.resto }} unidade(s) avulsa(s)</strong>
+                                <span v-if="calcularCaixasSaida.caixas === 0 && calcularCaixasSaida.resto === 0">0 unidades</span>
+                            </p>
+                            <p class="text-[10px] text-amber-600 mt-0.5">(Padrão: {{ calcularCaixasSaida.porCaixa }} unidades por caixa)</p>
+                        </div>
                         
                         <div class="grid grid-cols-2 gap-4">
                             <div>

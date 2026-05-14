@@ -80,6 +80,20 @@ createApp({
             return formEntrada.value.qtd_caixas * formEntrada.value.unidades_por_caixa;
         });
 
+        const calcularCaixasSaida = computed(() => {
+            if (!formSaida.value.medicamentoId || !formSaida.value.quantidade) return null;
+            const med = medicamentos.value.find(m => m.id === formSaida.value.medicamentoId);
+            if (!med || !med.quantidade_por_caixa || med.quantidade_por_caixa <= 0) return null;
+            
+            const qtd = formSaida.value.quantidade;
+            const porCaixa = med.quantidade_por_caixa;
+            
+            const caixas = Math.floor(qtd / porCaixa);
+            const resto = qtd % porCaixa;
+            
+            return { caixas, resto, porCaixa };
+        });
+
         // --- MÉTODOS DE MODAL ---
         const openModal = (tipo) => { currentModal.value = tipo; };
         const closeModal = () => { currentModal.value = null; };
@@ -260,7 +274,7 @@ createApp({
             formMedicamento, formPaciente, formEntrada, formSaida, formRelatorio, relatorioAberto,
             relatorios, gerarRelatorio, abrirRelatorio, printRelatorio,
             saveMedicamento, savePaciente, editPaciente, deletePaciente, registrarEntrada, registrarSaida,
-            calcularTotalEntrada
+            calcularTotalEntrada, calcularCaixasSaida
         };
     }
 }).mount('#app');
