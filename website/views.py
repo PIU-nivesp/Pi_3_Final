@@ -4,6 +4,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.core.management import call_command
 from io import StringIO
+from django.core.serializers.json import DjangoJSONEncoder
 from .models import Medicamento, Paciente, Movimentacao, Relatorio# 1. Renderiza a página HTML
 def home(request):
     return render(request, 'index.html')
@@ -11,19 +12,19 @@ def home(request):
 # 2. APIs de Listagem
 def api_medicamentos(request):
     medicamentos = list(Medicamento.objects.all().values())
-    return JsonResponse(medicamentos, safe=False)
+    return JsonResponse(medicamentos, safe=False, encoder=DjangoJSONEncoder)
 
 def api_pacientes(request):
     pacientes = list(Paciente.objects.all().values())
-    return JsonResponse(pacientes, safe=False)
+    return JsonResponse(pacientes, safe=False, encoder=DjangoJSONEncoder)
 
 def api_movimentacoes(request):
     movimentos = list(Movimentacao.objects.all().values('id', 'tipo', 'quantidade', 'data', 'medicamento__nome', 'paciente__nome'))
-    return JsonResponse(movimentos, safe=False)
+    return JsonResponse(movimentos, safe=False, encoder=DjangoJSONEncoder)
 
 def api_relatorios(request):
     relatorios = list(Relatorio.objects.all().order_by('-data_geracao').values('id', 'titulo', 'tipo', 'data_geracao'))
-    return JsonResponse(relatorios, safe=False)
+    return JsonResponse(relatorios, safe=False, encoder=DjangoJSONEncoder)
 
 def api_get_relatorio(request, id):
     rel = get_object_or_404(Relatorio, id=id)
@@ -33,7 +34,7 @@ def api_get_relatorio(request, id):
         'tipo': rel.tipo,
         'conteudo': rel.conteudo,
         'data_geracao': rel.data_geracao
-    })
+    }, encoder=DjangoJSONEncoder)
 
 # 3. APIs de Criação e Atualização
 @csrf_exempt
