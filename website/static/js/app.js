@@ -11,6 +11,7 @@ createApp({
         const medicamentos = ref([]);
         const pacientes = ref([]);
         const movimentos = ref([]);
+        const relatorios = ref([]);
         const searchQuery = ref('');
         const currentModal = ref(null);
 
@@ -30,6 +31,8 @@ createApp({
         const formPaciente = ref({ id: null, nome: '', documento: '', endereco: '', telefone: '' });
         const formEntrada = ref({ medicamentoId: '', quantidade: 1 });
         const formSaida = ref({ medicamentoId: '', pacienteId: '', quantidade: 1, endereco: '', telefone: '', crm: '', nomeMedico: '' });
+        const formRelatorio = ref({ tipo: '1', pacienteId: '', medicamentoId: '' });
+        const relatorioAberto = ref(null);
 
         // --- COMPUTED PROPERTIES ---
         const filteredMedicamentos = computed(() => {
@@ -71,12 +74,16 @@ createApp({
             try {
                 if (typeof ApiService !== 'undefined') {
                     // Carrega ambas as listas em paralelo para manter o sidebar sincronizado
-                    const [meds, pacs] = await Promise.all([
+                    const [meds, pacs, rels, movs] = await Promise.all([
                         ApiService.getMedicamentos(),
-                        ApiService.getPacientes()
+                        ApiService.getPacientes(),
+                        ApiService.getRelatorios(),
+                        ApiService.getMovimentos()
                     ]);
                     medicamentos.value = Array.isArray(meds) ? meds : [];
                     pacientes.value = Array.isArray(pacs) ? pacs : [];
+                    relatorios.value = Array.isArray(rels) ? rels : [];
+                    movimentos.value = Array.isArray(movs) ? movs : [];
                 }
             } catch (error) {
                 console.error("Erro ao carregar dados:", error);
@@ -136,6 +143,57 @@ createApp({
             closeModal();
         };
 
+        const gerarRelatorio = async () => {
+            let titulo = '';
+            let dadosJson = [];
+            const movs = movimentos.value;
+            const t = formRelatorio.value.tipo;
+            
+            if (t === '1') {
+                const pac = pacientes.value.find(p => p.id === formRelatorio.value.pacienteId);
+                titulo = `Relatório por Paciente: ${pac ? pac.nome : ''}`;
+                dadosJson = movs.filter(m => m.paciente__nome === (pac ? pac.nome : ''));
+            } else if (t === '2') {
+                titulo = 'Relatório de Todos os Pacientes';
+                dadosJson = movs.filter(m => m.paciente__nome);
+            } else if (t === '3') {
+                const med = medicamentos.value.find(m => m.id === formRelatorio.value.medicamentoId);
+                titulo = `Relatório por Medicamento: ${med ? med.nome : ''}`;
+                dadosJson = movs.filter(m => m.medicamento__nome === (med ? med.nome : ''));
+            } else if (t === '4') {
+                titulo = 'Relatório de Todos os Medicamentos';
+                dadosJson = movs;
+            } else if (t === '5') {
+                titulo = 'Relatório de Pacientes e Medicamentos';
+                dadosJson = movs;
+            }
+
+            const novoRel = await ApiService.saveRelatorio({
+                titulo,
+                tipo: t,
+                conteudo: JSON.stringify(dadosJson)
+            });
+
+            if (novoRel) {
+                await loadData();
+                closeModal();
+                abrirRelatorio(novoRel.id);
+            }
+        };
+
+        const abrirRelatorio = async (id) => {
+            const rel = await ApiService.getRelatorio(id);
+            if (rel) {
+                rel.conteudoData = JSON.parse(rel.conteudo);
+                relatorioAberto.value = rel;
+                openModal('visualizar-relatorio');
+            }
+        };
+
+        const printRelatorio = () => {
+            window.print();
+        };
+
         const handleLogin = () => { isAuthenticated.value = true; };
         const handleLogout = () => { isAuthenticated.value = false; };
 
@@ -151,7 +209,8 @@ createApp({
             showSidebar, activeSideTab, toggleSidebar, setSideTab,
             showA11yPanel, highContrast, fontSizeRem, toggleA11yPanel, toggleHighContrast, adjustFontSize,
             currentModal, openModal, closeModal,
-            formMedicamento, formPaciente, formEntrada, formSaida,
+            formMedicamento, formPaciente, formEntrada, formSaida, formRelatorio, relatorioAberto,
+            relatorios, gerarRelatorio, abrirRelatorio, printRelatorio,
             saveMedicamento, savePaciente, editPaciente, deletePaciente, registrarEntrada, registrarSaida
         };
     }

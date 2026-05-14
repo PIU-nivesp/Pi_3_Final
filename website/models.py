@@ -51,3 +51,16 @@ class Movimentacao(models.Model):
     class Meta:
         verbose_name = "Movimentação"
         verbose_name_plural = "Movimentações"
+
+class Relatorio(models.Model):
+    titulo = models.CharField(max_length=200, verbose_name="Título do Relatório")
+    tipo = models.CharField(max_length=50, verbose_name="Tipo")
+    conteudo = models.TextField(verbose_name="Conteúdo JSON")
+    data_geracao = models.DateTimeField(auto_now_add=True, verbose_name="Data de Geração")
+
+    def __str__(self):
+        return self.titulo
+
+    class Meta:
+        verbose_name = "Relatório"
+        verbose_name_plural = "Relatórios"

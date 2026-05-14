@@ -4,9 +4,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.core.management import call_command
 from io import StringIO
-from .models import Medicamento, Paciente, Movimentacao
-
-# 1. Renderiza a página HTML
+from .models import Medicamento, Paciente, Movimentacao, Relatorio# 1. Renderiza a página HTML
 def home(request):
     return render(request, 'index.html')
 
@@ -23,6 +21,20 @@ def api_movimentacoes(request):
     movimentos = list(Movimentacao.objects.all().values('id', 'tipo', 'quantidade', 'data', 'medicamento__nome', 'paciente__nome'))
     return JsonResponse(movimentos, safe=False)
 
+def api_relatorios(request):
+    relatorios = list(Relatorio.objects.all().order_by('-data_geracao').values('id', 'titulo', 'tipo', 'data_geracao'))
+    return JsonResponse(relatorios, safe=False)
+
+def api_get_relatorio(request, id):
+    rel = get_object_or_404(Relatorio, id=id)
+    return JsonResponse({
+        'id': rel.id,
+        'titulo': rel.titulo,
+        'tipo': rel.tipo,
+        'conteudo': rel.conteudo,
+        'data_geracao': rel.data_geracao
+    })
+
 # 3. APIs de Criação e Atualização
 @csrf_exempt
 def api_save_medicamento(request):
@@ -35,6 +47,17 @@ def api_save_medicamento(request):
             estoque_critico=data.get('estoque_critico', 10)
         )
         return JsonResponse({'status': 'ok', 'id': med.id})
+
+@csrf_exempt
+def api_save_relatorio(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        rel = Relatorio.objects.create(
+            titulo=data.get('titulo'),
+            tipo=data.get('tipo'),
+            conteudo=data.get('conteudo')
+        )
+        return JsonResponse({'status': 'ok', 'id': rel.id})
 
 @csrf_exempt
 def api_save_paciente(request):

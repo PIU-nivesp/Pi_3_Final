@@ -18,5 +18,8 @@ urlpatterns = [
     path('api/pacientes/novo/', views.api_save_paciente, name='api_save_paciente'),
     path('api/pacientes/deletar/<int:id>/', views.api_delete_paciente, name='api_delete_paciente'),
     path('api/movimentacoes/', views.api_movimentacoes, name='api_movimentacoes'),
+    path('api/relatorios/', views.api_relatorios, name='api_relatorios'),
+    path('api/relatorios/<int:id>/', views.api_get_relatorio, name='api_get_relatorio'),
+    path('api/relatorios/novo/', views.api_save_relatorio, name='api_save_relatorio'),
     path('run-migrations/', views.run_migrations_view, name='run_migrations'),
 ]

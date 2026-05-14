@@ -118,6 +118,41 @@ class ApiService {
             return await response.json();
         } catch (e) { return []; }
     }
+
+    // --- RELATÓRIOS ---
+    static async getRelatorios() {
+        try {
+            const response = await fetch('/api/relatorios/');
+            if (!response.ok) throw new Error('Erro ao buscar relatórios');
+            return await response.json();
+        } catch (e) { return []; }
+    }
+
+    static async getRelatorio(id) {
+        try {
+            const response = await fetch(`/api/relatorios/${id}/`);
+            if (!response.ok) throw new Error('Erro ao buscar relatório');
+            return await response.json();
+        } catch (e) { return null; }
+    }
+
+    static async saveRelatorio(relatorio) {
+        try {
+            const response = await fetch('/api/relatorios/novo/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': window.CSRF_TOKEN
+                },
+                body: JSON.stringify(relatorio)
+            });
+            if (!response.ok) throw new Error('Erro ao salvar relatório');
+            return await response.json();
+        } catch (error) {
+            console.error("Erro na API:", error);
+            return null;
+        }
+    }
 }
 
 // Tornar o ApiService global para que o app.js consiga usá-lo sem "import"
