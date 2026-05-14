@@ -44,7 +44,13 @@ def api_save_medicamento(request):
             nome=data.get('nome'),
             dosagem=data.get('dosagem'),
             quantidade=data.get('quantidade', 0),
-            estoque_critico=data.get('estoque_critico', 10)
+            estoque_critico=data.get('estoque_critico', 10),
+            tipo=data.get('tipo'),
+            unidade_dosagem=data.get('unidade_dosagem'),
+            quantidade_por_caixa=data.get('quantidade_por_caixa', 1),
+            fabricante=data.get('fabricante'),
+            lote=data.get('lote'),
+            validade=data.get('validade') if data.get('validade') else None
         )
         return JsonResponse({'status': 'ok', 'id': med.id})
 
@@ -100,14 +106,21 @@ def api_update_estoque(request):
         med = get_object_or_404(Medicamento, id=med_id)
         pac = Paciente.objects.filter(id=pac_id).first() if pac_id else None
 
-        if tipo == 'saida':
+        if tipo == 'entrada':
+            med.quantidade += qtd
+            db_tipo = 'ENTRADA'
+            # Atualiza dados do lote no medicamento (opcional, mas solicitado pelo contexto de 'current' stock)
+            if data.get('fabricante'): med.fabricante = data.get('fabricante')
+            if data.get('lote'): med.lote = data.get('lote')
+            if data.get('validade'): med.validade = data.get('validade')
+            if data.get('tipo_med'): med.tipo = data.get('tipo_med')
+            if data.get('unidade_dosagem'): med.unidade_dosagem = data.get('unidade_dosagem')
+            if data.get('quantidade_por_caixa'): med.quantidade_por_caixa = data.get('quantidade_por_caixa')
+        else:
             if med.quantidade < qtd:
                 return JsonResponse({'error': 'Estoque insuficiente'}, status=400)
             med.quantidade -= qtd
             db_tipo = 'SAIDA'
-        else:
-            med.quantidade += qtd
-            db_tipo = 'ENTRADA'
         
         med.save()
 
@@ -120,7 +133,10 @@ def api_update_estoque(request):
             endereco=data.get('endereco') or (pac.endereco if pac else ''),
             telefone_contato=data.get('telefone') or (pac.telefone if pac else ''),
             crm=data.get('crm'),
-            nome_medico=data.get('nome_medico')
+            nome_medico=data.get('nome_medico'),
+            fabricante=data.get('fabricante'),
+            lote=data.get('lote'),
+            validade=data.get('validade') if data.get('validade') else None
         )
 
         return JsonResponse({'status': 'ok', 'nova_quantidade': med.quantidade})

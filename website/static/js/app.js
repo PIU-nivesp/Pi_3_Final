@@ -1,4 +1,4 @@
-const { createApp, ref, computed, onMounted } = Vue;
+const { createApp, ref, computed, onMounted, watch } = Vue;
 
 createApp({
     setup() {
@@ -43,9 +43,9 @@ createApp({
         };
 
         // --- FORMULÁRIOS ---
-        const formMedicamento = ref({ nome: '', dosagem: '', quantidade: 0, estoque_critico: 10 });
+        const formMedicamento = ref({ nome: '', dosagem: '', quantidade: 0, estoque_critico: 10, tipo: 'COMPRIMIDO', unidade_dosagem: 'MG', quantidade_por_caixa: 1, fabricante: '', lote: '', validade: '' });
         const formPaciente = ref({ id: null, nome: '', documento: '', endereco: '', telefone: '' });
-        const formEntrada = ref({ medicamentoId: '', quantidade: 1 });
+        const formEntrada = ref({ medicamentoId: '', quantidade: 1, qtd_caixas: 1, unidades_por_caixa: 1, fabricante: '', lote: '', validade: '', tipo: 'COMPRIMIDO', unidade_dosagem: 'MG' });
         const formSaida = ref({ medicamentoId: '', pacienteId: '', quantidade: 1, endereco: '', telefone: '', crm: '', nomeMedico: '' });
         const formRelatorio = ref({ tipo: '1', pacienteId: '', medicamentoId: '' });
         const relatorioAberto = ref(null);
@@ -74,6 +74,10 @@ createApp({
         const selectedPacienteInfo = computed(() => {
             if (!formSaida.value.pacienteId) return null;
             return pacientes.value.find(p => p.id === formSaida.value.pacienteId);
+        });
+
+        const calcularTotalEntrada = computed(() => {
+            return formEntrada.value.qtd_caixas * formEntrada.value.unidades_por_caixa;
         });
 
         // --- MÉTODOS DE MODAL ---
@@ -141,10 +145,32 @@ createApp({
             }
         };
 
+        // Watcher para preencher dados do medicamento na entrada
+        watch(() => formEntrada.value.medicamentoId, (newId) => {
+            if (!newId) return;
+            const med = medicamentos.value.find(m => m.id === newId);
+            if (med) {
+                formEntrada.value.unidades_por_caixa = med.quantidade_por_caixa || 1;
+                formEntrada.value.tipo = med.tipo || 'COMPRIMIDO';
+                formEntrada.value.unidade_dosagem = med.unidade_dosagem || 'MG';
+                formEntrada.value.fabricante = med.fabricante || '';
+            }
+        });
+
         const registrarEntrada = async () => {
-            await ApiService.updateEstoque(formEntrada.value.medicamentoId, formEntrada.value.quantidade, 'entrada');
+            const total = formEntrada.value.qtd_caixas * formEntrada.value.unidades_por_caixa;
+            await ApiService.updateEstoque(formEntrada.value.medicamentoId, total, 'entrada', null, {
+                fabricante: formEntrada.value.fabricante,
+                lote: formEntrada.value.lote,
+                validade: formEntrada.value.validade,
+                tipo_med: formEntrada.value.tipo,
+                unidade_dosagem: formEntrada.value.unidade_dosagem,
+                quantidade_por_caixa: formEntrada.value.unidades_por_caixa
+            });
             await loadData();
             closeModal();
+            // Reset form
+            formEntrada.value = { medicamentoId: '', quantidade: 1, qtd_caixas: 1, unidades_por_caixa: 1, fabricante: '', lote: '', validade: '', tipo: 'COMPRIMIDO', unidade_dosagem: 'MG' };
         };
 
         const registrarSaida = async () => {
@@ -233,7 +259,8 @@ createApp({
             currentModal, openModal, closeModal,
             formMedicamento, formPaciente, formEntrada, formSaida, formRelatorio, relatorioAberto,
             relatorios, gerarRelatorio, abrirRelatorio, printRelatorio,
-            saveMedicamento, savePaciente, editPaciente, deletePaciente, registrarEntrada, registrarSaida
+            saveMedicamento, savePaciente, editPaciente, deletePaciente, registrarEntrada, registrarSaida,
+            calcularTotalEntrada
         };
     }
 }).mount('#app');
