@@ -9,23 +9,6 @@ const CapsLogo = {
                         <stop offset="0%" stop-color="#06b6d4" />
                         <stop offset="100%" stop-color="#1e3a8a" />
                     </linearGradient>
-                    <style>
-                        .draw-path {
-                            stroke-dasharray: 250;
-                            stroke-dashoffset: 250;
-                            animation: draw 2s ease-in-out forwards;
-                        }
-                        .draw-fill {
-                            opacity: 0;
-                            animation: fadeIn 1s ease-out 1.2s forwards;
-                        }
-                        @keyframes draw {
-                            to { stroke-dashoffset: 0; }
-                        }
-                        @keyframes fadeIn {
-                            to { opacity: 1; }
-                        }
-                    </style>
                 </defs>
                 
                 <!-- Coração -->
