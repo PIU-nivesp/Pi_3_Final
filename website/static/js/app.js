@@ -49,7 +49,7 @@ createApp({
         };
 
         // --- FORMULÁRIOS ---
-        const formMedicamento = ref({ nome: '', dosagem: '', quantidade: 0, estoque_critico: 10, tipo: 'COMPRIMIDO', unidade_dosagem: 'MG', quantidade_por_caixa: 1, fabricante: '', lote: '', validade: '' });
+        const formMedicamento = ref({ id: null, nome: '', dosagem: '', quantidade: 0, estoque_critico: 10, tipo: 'COMPRIMIDO', unidade_dosagem: 'MG', quantidade_por_caixa: 1, fabricante: '', lote: '', validade: '' });
         const formPaciente = ref({ id: null, nome: '', documento: '', endereco: '', telefone: '' });
         const formEntrada = ref({ medicamentoId: '', quantidade: 1, qtd_caixas: 1, unidades_por_caixa: 1, fabricante: '', lote: '', validade: '', tipo: 'COMPRIMIDO', unidade_dosagem: 'MG' });
         const formSaida = ref({ medicamentoId: '', pacienteId: '', quantidade: 1, endereco: '', telefone: '', crm: '', nomeMedico: '' });
@@ -101,8 +101,21 @@ createApp({
         });
 
         // --- MÉTODOS DE MODAL ---
-        const openModal = (tipo) => { currentModal.value = tipo; };
-        const closeModal = () => { currentModal.value = null; };
+        const openModal = (tipo) => { 
+            if (tipo === 'novo-medicamento' && !formMedicamento.value.id) {
+                formMedicamento.value = { id: null, nome: '', dosagem: '', quantidade: 0, estoque_critico: 10, tipo: 'COMPRIMIDO', unidade_dosagem: 'MG', quantidade_por_caixa: 1, fabricante: '', lote: '', validade: '' };
+            }
+            if (tipo === 'novo-paciente' && !formPaciente.value.id) {
+                formPaciente.value = { id: null, nome: '', documento: '', endereco: '', telefone: '' };
+            }
+            currentModal.value = tipo; 
+        };
+        const closeModal = () => { 
+            currentModal.value = null; 
+            // Limpa IDs ao fechar para que o próximo 'novo' abra limpo
+            formMedicamento.value.id = null;
+            formPaciente.value.id = null;
+        };
 
         // --- MÉTODOS DE ACESSIBILIDADE ---
         const toggleA11yPanel = () => { showA11yPanel.value = !showA11yPanel.value; };
@@ -141,6 +154,21 @@ createApp({
             await ApiService.saveMedicamento(formMedicamento.value);
             await loadData();
             closeModal();
+            formMedicamento.value = { id: null, nome: '', dosagem: '', quantidade: 0, estoque_critico: 10, tipo: 'COMPRIMIDO', unidade_dosagem: 'MG', quantidade_por_caixa: 1, fabricante: '', lote: '', validade: '' };
+        };
+
+        const editMedicamento = (med) => {
+            formMedicamento.value = { ...med };
+            openModal('novo-medicamento');
+        };
+
+        const deleteMedicamento = async (id) => {
+            if (confirm('Tem certeza que deseja excluir este medicamento? Esta ação não pode ser desfeita.')) {
+                const res = await ApiService.deleteMedicamento(id);
+                if (res) {
+                    await loadData();
+                }
+            }
         };
 
         const savePaciente = async () => {
@@ -279,7 +307,7 @@ createApp({
             currentModal, openModal, closeModal,
             formMedicamento, formPaciente, formEntrada, formSaida, formRelatorio, relatorioAberto,
             relatorios, gerarRelatorio, abrirRelatorio, printRelatorio,
-            saveMedicamento, savePaciente, editPaciente, deletePaciente, registrarEntrada, registrarSaida,
+            saveMedicamento, editMedicamento, deleteMedicamento, savePaciente, editPaciente, deletePaciente, registrarEntrada, registrarSaida,
             calcularTotalEntrada, calcularCaixasSaida
         };
     }
