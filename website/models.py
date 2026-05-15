@@ -27,6 +27,7 @@ class Paciente(models.Model):
     documento = models.CharField(max_length=20, unique=True, verbose_name="CPF ou Prontuário")
     endereco = models.CharField(max_length=255, blank=True, null=True, verbose_name="Endereço")
     telefone = models.CharField(max_length=20, blank=True, null=True, verbose_name="Telefone de Contato")
+    medicamentos_em_uso = models.TextField(blank=True, null=True, verbose_name="Medicamentos em Uso")
 
     def __str__(self):
         return self.nome

@@ -102,13 +102,15 @@ def api_save_paciente(request):
             pac.documento = data.get('documento')
             pac.endereco = data.get('endereco', pac.endereco)
             pac.telefone = data.get('telefone', pac.telefone)
+            pac.medicamentos_em_uso = data.get('medicamentos_em_uso', pac.medicamentos_em_uso)
             pac.save()
         else:
             pac = Paciente.objects.create(
                 nome=data.get('nome'),
                 documento=data.get('documento'),
                 endereco=data.get('endereco', ''),
-                telefone=data.get('telefone', '')
+                telefone=data.get('telefone', ''),
+                medicamentos_em_uso=data.get('medicamentos_em_uso', '')
             )
         return JsonResponse({'status': 'ok', 'id': pac.id})
 

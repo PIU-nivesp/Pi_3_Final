@@ -69,7 +69,7 @@ createApp({
 
         // --- FORMULÁRIOS ---
         const formMedicamento = ref({ id: null, nome: '', dosagem: '', quantidade: 0, estoque_critico: 10, tipo: 'COMPRIMIDO', unidade_dosagem: 'MG', quantidade_por_caixa: 1, fabricante: '', lote: '', validade: '' });
-        const formPaciente = ref({ id: null, nome: '', documento: '', endereco: '', telefone: '' });
+        const formPaciente = ref({ id: null, nome: '', documento: '', endereco: '', telefone: '', medicamentos_em_uso: '' });
         const formEntrada = ref({ medicamentoId: '', quantidade: 1, qtd_caixas: 1, unidades_por_caixa: 1, fabricante: '', lote: '', validade: '', tipo: 'COMPRIMIDO', unidade_dosagem: 'MG' });
         const formSaida = ref({ medicamentoId: '', pacienteId: '', quantidade: 1, endereco: '', telefone: '', crm: '', nomeMedico: '' });
         const formRelatorio = ref({ tipo: '1', pacienteId: '', medicamentoId: '' });
@@ -125,7 +125,7 @@ createApp({
                 formMedicamento.value = { id: null, nome: '', dosagem: '', quantidade: 0, estoque_critico: 10, tipo: 'COMPRIMIDO', unidade_dosagem: 'MG', quantidade_por_caixa: 1, fabricante: '', lote: '', validade: '' };
             }
             if (tipo === 'novo-paciente' && !formPaciente.value.id) {
-                formPaciente.value = { id: null, nome: '', documento: '', endereco: '', telefone: '' };
+                formPaciente.value = { id: null, nome: '', documento: '', endereco: '', telefone: '', medicamentos_em_uso: '' };
             }
             currentModal.value = tipo; 
         };
@@ -195,7 +195,7 @@ createApp({
             // Atualiza lista de pacientes
             pacientes.value = await ApiService.getPacientes();
             closeModal();
-            formPaciente.value = { id: null, nome: '', documento: '', endereco: '', telefone: '' };
+            formPaciente.value = { id: null, nome: '', documento: '', endereco: '', telefone: '', medicamentos_em_uso: '' };
         };
 
         const editPaciente = (pac) => {

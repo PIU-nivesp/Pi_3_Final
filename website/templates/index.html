@@ -315,8 +315,8 @@
                                         <tr class="bg-gray-50/50 text-gray-500 text-xs uppercase tracking-wider">
                                             <th class="px-6 py-4 font-semibold">Nome</th>
                                             <th class="px-6 py-4 font-semibold">Documento</th>
-                                            <th class="px-6 py-4 font-semibold">Endereço</th>
-                                            <th class="px-6 py-4 font-semibold">Telefone</th>
+                                            <th class="px-6 py-4 font-semibold">Endereço/Telefone</th>
+                                            <th class="px-6 py-4 font-semibold">Medicamentos em Uso</th>
                                             <th class="px-6 py-4 font-semibold"></th>
                                         </tr>
                                     </thead>
@@ -327,8 +327,13 @@
                                         <tr v-for="pac in filteredPacientes" :key="pac.id" class="hover:bg-gray-50/50 transition-colors group">
                                             <td class="px-6 py-4 font-semibold text-gray-900">{{ pac.nome }}</td>
                                             <td class="px-6 py-4 text-gray-600 font-mono text-sm">{{ pac.documento }}</td>
-                                            <td class="px-6 py-4 text-gray-500 text-sm">{{ pac.endereco || '—' }}</td>
-                                            <td class="px-6 py-4 text-gray-500 text-sm">{{ pac.telefone || '—' }}</td>
+                                            <td class="px-6 py-4">
+                                                <div class="text-sm text-gray-500">{{ pac.endereco || '—' }}</div>
+                                                <div class="text-xs text-gray-400 mt-1">{{ pac.telefone || '—' }}</div>
+                                            </td>
+                                            <td class="px-6 py-4">
+                                                <div class="text-sm text-gray-600 max-w-xs truncate" :title="pac.medicamentos_em_uso">{{ pac.medicamentos_em_uso || 'Nenhum registrado' }}</div>
+                                            </td>
                                             <td class="px-6 py-4 text-right">
                                                 <div class="flex justify-end gap-2">
                                                     <button @click="editPaciente(pac)" class="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all opacity-0 group-hover:opacity-100" title="Editar">
@@ -563,10 +568,28 @@
                     </form>
 
                     <form v-if="currentModal === 'novo-paciente'" @submit.prevent="savePaciente" class="space-y-4">
-                        <input v-model="formPaciente.nome" type="text" placeholder="Nome Completo" required class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-md outline-none">
-                        <input v-model="formPaciente.documento" type="text" placeholder="Documento (CPF/SUS)" required class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-md outline-none">
-                        <input v-model="formPaciente.endereco" type="text" placeholder="Endereço" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-md outline-none">
-                        <input v-model="formPaciente.telefone" type="text" placeholder="Telefone" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-md outline-none">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase mb-1 px-1">Nome Completo</label>
+                            <input v-model="formPaciente.nome" type="text" placeholder="Ex: João da Silva" required class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-md outline-none focus:ring-2 focus:ring-blue-500/20">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase mb-1 px-1">Documento (CPF/Prontuário)</label>
+                            <input v-model="formPaciente.documento" type="text" placeholder="Ex: 123.456.789-00" required class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-md outline-none focus:ring-2 focus:ring-blue-500/20">
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1 px-1">Endereço</label>
+                                <input v-model="formPaciente.endereco" type="text" placeholder="Ex: Rua A, 123" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-md outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1 px-1">Telefone</label>
+                                <input v-model="formPaciente.telefone" type="text" placeholder="Ex: (13) 99999-9999" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-md outline-none">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase mb-1 px-1">Medicamentos em Uso (Prescrição Atual)</label>
+                            <textarea v-model="formPaciente.medicamentos_em_uso" rows="3" placeholder="Ex: Sertralina 50mg (1x ao dia), Diazepam 10mg (se necessário)..." class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-md outline-none resize-none focus:ring-2 focus:ring-blue-500/20"></textarea>
+                        </div>
                         <div class="flex justify-end gap-3 pt-4">
                             <button type="button" @click="closeModal" class="px-6 py-2.5 text-gray-500 font-medium">Cancelar</button>
                             <button type="submit" class="px-6 py-2.5 bg-gray-900 text-white font-bold rounded-md shadow-lg hover:bg-black active:scale-95 transition-all">
