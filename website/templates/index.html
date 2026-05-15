@@ -50,6 +50,9 @@
             .print-area { position: absolute; left: 0; top: 0; width: 100%; box-shadow: none !important; border: none !important; }
             .modal-overlay, .print-hidden { display: none !important; }
         }
+        /* Vue Transitions */
+        .fade-enter-active, .fade-leave-active { transition: opacity 0.3s ease, transform 0.3s ease; }
+        .fade-enter-from, .fade-leave-to { opacity: 0; transform: translateY(10px); }
     </style>
 </head>
 <body class="bg-apple-50 font-sans antialiased overflow-x-hidden">
@@ -712,6 +715,17 @@
         </Teleport>
 
         <div class="fixed top-6 right-6 z-[70] flex flex-col gap-2 toast-container pointer-events-none"></div>
+
+        <!-- LOADING INDICATOR GLOBAL -->
+        <Transition name="fade">
+            <div v-show="isLoading" class="fixed bottom-6 right-6 z-[65] flex items-center gap-3 px-4 py-3 bg-white/90 backdrop-blur-md rounded-full shadow-apple-lg border border-gray-200 transition-all duration-300">
+                <svg class="animate-spin h-5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <span class="text-sm font-semibold text-gray-700 pr-1">Sincronizando...</span>
+            </div>
+        </Transition>
     {% endverbatim %}
     </div>
 

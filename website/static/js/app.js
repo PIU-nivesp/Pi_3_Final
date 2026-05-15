@@ -2,6 +2,25 @@ const { createApp, ref, computed, onMounted, watch } = Vue;
 
 createApp({
     setup() {
+        // --- ESTADO DE CARREGAMENTO GLOBAL ---
+        const isLoading = ref(false);
+        const activeRequests = ref(0);
+
+        const originalFetch = window.fetch;
+        window.fetch = async function(...args) {
+            activeRequests.value++;
+            isLoading.value = true;
+            try {
+                return await originalFetch.apply(this, args);
+            } finally {
+                activeRequests.value--;
+                if (activeRequests.value <= 0) {
+                    activeRequests.value = 0;
+                    isLoading.value = false;
+                }
+            }
+        };
+
         // --- ESTADO DE AUTENTICAÇÃO ---
         const isAuthenticated = ref(true); // Definido como true para testes no PI
         const isLoggingIn = ref(false);
@@ -299,6 +318,7 @@ createApp({
 
         // --- RETORNO PARA O TEMPLATE (CRUCIAL PARA FUNCIONAR) ---
         return {
+            isLoading,
             isAuthenticated, isLoggingIn, loginForm, handleLogin, handleLogout,
             medicamentos, pacientes, movimentos, searchQuery, filteredMedicamentos, filteredPacientes,
             medicamentosEmAlerta, medicamentosEmFalta, selectedPacienteInfo,
