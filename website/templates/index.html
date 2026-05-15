@@ -266,10 +266,11 @@
                                             <th class="px-6 py-4 font-semibold">Medicamento</th>
                                             <th class="px-6 py-4 font-semibold text-center">Quantidade</th>
                                             <th class="px-6 py-4 font-semibold text-center">Status</th>
+                                            <th class="px-6 py-4 font-semibold"></th>
                                         </tr>
                                     </thead>
                                     <tbody class="divide-y divide-gray-50">
-                                        <tr v-for="item in filteredMedicamentos" :key="item.id" class="hover:bg-gray-50/50 transition-colors">
+                                        <tr v-for="item in filteredMedicamentos" :key="item.id" class="hover:bg-gray-50/50 transition-colors group">
                                             <td class="px-6 py-4">
                                                 <div class="font-semibold text-gray-900">{{ item.nome }}</div>
                                                 <div class="text-xs text-gray-500">{{ item.dosagem }}</div>
@@ -282,6 +283,16 @@
                                                     <span v-if="item.quantidade === 0" class="px-2.5 py-1 bg-red-50 text-red-600 rounded-full text-[10px] font-bold uppercase">Em Falta</span>
                                                     <span v-else-if="item.quantidade <= item.estoque_critico" class="px-2.5 py-1 bg-amber-50 text-amber-600 rounded-full text-[10px] font-bold uppercase">Crítico</span>
                                                     <span v-else class="px-2.5 py-1 bg-emerald-50 text-emerald-600 rounded-full text-[10px] font-bold uppercase">Adequado</span>
+                                                </div>
+                                            </td>
+                                            <td class="px-6 py-4 text-right">
+                                                <div class="flex justify-end gap-2">
+                                                    <button @click="editMedicamento(item)" class="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all opacity-0 group-hover:opacity-100" title="Editar">
+                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+                                                    </button>
+                                                    <button @click="deleteMedicamento(item.id)" class="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all opacity-0 group-hover:opacity-100" title="Excluir">
+                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                                    </button>
                                                 </div>
                                             </td>
                                         </tr>
@@ -431,7 +442,7 @@
                 <div :class="['relative w-full bg-white p-6 sm:p-8 rounded-md shadow-apple-lg modal-content', currentModal === 'visualizar-relatorio' ? 'max-w-4xl print-area' : 'max-w-lg']">
                     <div class="flex justify-between items-center mb-6 print-hidden">
                         <h3 class="text-xl font-bold text-gray-900">
-                            <span v-if="currentModal === 'novo-medicamento'">Cadastrar Medicamento</span>
+                            <span v-if="currentModal === 'novo-medicamento'">{{ formMedicamento.id ? 'Editar Medicamento' : 'Cadastrar Medicamento' }}</span>
                             <span v-if="currentModal === 'novo-paciente'">{{ formPaciente.id ? 'Editar Paciente' : 'Novo Paciente' }}</span>
                             <span v-if="currentModal === 'entrada'">Entrada de Estoque</span>
                             <span v-if="currentModal === 'saida'">Baixa para Paciente</span>
@@ -548,7 +559,7 @@
 
                         <div class="flex justify-end gap-3 pt-4">
                             <button type="button" @click="closeModal" class="px-6 py-2.5 text-gray-500 font-medium hover:bg-gray-100 rounded-md transition-all">Cancelar</button>
-                            <button type="submit" class="px-6 py-2.5 bg-blue-600 text-white font-bold rounded-md shadow-lg shadow-blue-100 hover:bg-blue-700 active:scale-95 transition-all">Salvar Registro</button>
+                            <button type="submit" class="px-6 py-2.5 bg-blue-600 text-white font-bold rounded-md shadow-lg shadow-blue-100 hover:bg-blue-700 active:scale-95 transition-all">{{ formMedicamento.id ? 'Salvar Alterações' : 'Salvar Registro' }}</button>
                         </div>
                     </form>
 

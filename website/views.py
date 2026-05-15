@@ -41,18 +41,34 @@ def api_get_relatorio(request, id):
 def api_save_medicamento(request):
     if request.method == 'POST':
         data = json.loads(request.body)
-        med = Medicamento.objects.create(
-            nome=data.get('nome'),
-            dosagem=data.get('dosagem'),
-            quantidade=data.get('quantidade', 0),
-            estoque_critico=data.get('estoque_critico', 10),
-            tipo=data.get('tipo'),
-            unidade_dosagem=data.get('unidade_dosagem'),
-            quantidade_por_caixa=data.get('quantidade_por_caixa', 1),
-            fabricante=data.get('fabricante'),
-            lote=data.get('lote'),
-            validade=data.get('validade') if data.get('validade') else None
-        )
+        med_id = data.get('id')
+        
+        if med_id:
+            med = get_object_or_404(Medicamento, id=med_id)
+            med.nome = data.get('nome')
+            med.dosagem = data.get('dosagem')
+            med.quantidade = data.get('quantidade', med.quantidade)
+            med.estoque_critico = data.get('estoque_critico', med.estoque_critico)
+            med.tipo = data.get('tipo', med.tipo)
+            med.unidade_dosagem = data.get('unidade_dosagem', med.unidade_dosagem)
+            med.quantidade_por_caixa = data.get('quantidade_por_caixa', med.quantidade_por_caixa)
+            med.fabricante = data.get('fabricante', med.fabricante)
+            med.lote = data.get('lote', med.lote)
+            med.validade = data.get('validade') if data.get('validade') else None
+            med.save()
+        else:
+            med = Medicamento.objects.create(
+                nome=data.get('nome'),
+                dosagem=data.get('dosagem'),
+                quantidade=data.get('quantidade', 0),
+                estoque_critico=data.get('estoque_critico', 10),
+                tipo=data.get('tipo'),
+                unidade_dosagem=data.get('unidade_dosagem'),
+                quantidade_por_caixa=data.get('quantidade_por_caixa', 1),
+                fabricante=data.get('fabricante'),
+                lote=data.get('lote'),
+                validade=data.get('validade') if data.get('validade') else None
+            )
         return JsonResponse({'status': 'ok', 'id': med.id})
 
 @csrf_exempt
@@ -93,6 +109,13 @@ def api_delete_paciente(request, id):
     if request.method == 'POST' or request.method == 'DELETE':
         pac = get_object_or_404(Paciente, id=id)
         pac.delete()
+        return JsonResponse({'status': 'ok'})
+
+@csrf_exempt
+def api_delete_medicamento(request, id):
+    if request.method == 'POST' or request.method == 'DELETE':
+        med = get_object_or_404(Medicamento, id=id)
+        med.delete()
         return JsonResponse({'status': 'ok'})
 
 @csrf_exempt
