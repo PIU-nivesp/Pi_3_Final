@@ -1,5 +1,54 @@
 const { createApp, ref, computed, onMounted, watch } = Vue;
 
+const CapsLogo = {
+    template: `
+        <div class="relative w-full h-full flex items-center justify-center">
+            <svg viewBox="0 0 100 100" class="w-full h-full drop-shadow-md" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="logo-grad" x1="0%" y1="100%" x2="100%" y2="0%">
+                        <stop offset="0%" stop-color="#06b6d4" />
+                        <stop offset="100%" stop-color="#1e3a8a" />
+                    </linearGradient>
+                    <style>
+                        .draw-path {
+                            stroke-dasharray: 250;
+                            stroke-dashoffset: 250;
+                            animation: draw 2s ease-in-out forwards;
+                        }
+                        .draw-fill {
+                            opacity: 0;
+                            animation: fadeIn 1s ease-out 1.2s forwards;
+                        }
+                        @keyframes draw {
+                            to { stroke-dashoffset: 0; }
+                        }
+                        @keyframes fadeIn {
+                            to { opacity: 1; }
+                        }
+                    </style>
+                </defs>
+                
+                <!-- Coração -->
+                <path class="draw-path" d="M 50 30 C 35 15 15 25 20 45 C 23 58 35 65 45 70" stroke="url(#logo-grad)" stroke-width="4.5" stroke-linecap="round" />
+                
+                <!-- Mão / Palma e Dedo -->
+                <path class="draw-path" d="M 15 65 C 30 85 65 85 85 60 C 90 55 85 45 80 50 C 70 60 55 65 40 60" stroke="url(#logo-grad)" stroke-width="4.5" stroke-linecap="round" style="animation-delay: 0.2s" />
+                
+                <!-- Mão / Linha Inferior -->
+                <path class="draw-path" d="M 25 80 C 40 90 60 85 75 70" stroke="url(#logo-grad)" stroke-width="4.5" stroke-linecap="round" style="animation-delay: 0.4s" />
+                
+                <!-- Pílula -->
+                <g transform="translate(55, 45) rotate(50) translate(-55, -45)">
+                    <rect class="draw-path" x="40" y="15" width="30" height="60" rx="15" stroke="url(#logo-grad)" stroke-width="4.5" style="animation-delay: 0.5s" />
+                    <line class="draw-path" x1="40" y1="45" x2="70" y2="45" stroke="url(#logo-grad)" stroke-width="4.5" style="animation-delay: 0.7s" />
+                    <path class="draw-fill" d="M 40 45 L 70 45 L 70 60 A 15 15 0 0 1 40 60 Z" fill="url(#logo-grad)" />
+                    <path class="draw-path" d="M 47 25 A 8 8 0 0 1 60 20" stroke="#ffffff" stroke-width="3" stroke-linecap="round" style="animation-delay: 0.9s" />
+                </g>
+            </svg>
+        </div>
+    `
+};
+
 createApp({
     setup() {
         // --- ESTADO DE AUTENTICAÇÃO ---
@@ -324,4 +373,6 @@ createApp({
             calcularTotalEntrada, calcularCaixasSaida
         };
     }
-}).mount('#app');
+})
+.component('caps-logo', CapsLogo)
+.mount('#app');
