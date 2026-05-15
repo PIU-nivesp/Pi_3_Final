@@ -1,37 +1,5 @@
 const { createApp, ref, computed, onMounted, watch } = Vue;
 
-const CapsLogo = {
-    template: `
-        <div class="relative w-full h-full flex items-center justify-center">
-            <svg viewBox="0 0 100 100" class="w-full h-full drop-shadow-md" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                    <linearGradient id="logo-grad" x1="0%" y1="100%" x2="100%" y2="0%">
-                        <stop offset="0%" stop-color="#06b6d4" />
-                        <stop offset="100%" stop-color="#1e3a8a" />
-                    </linearGradient>
-                </defs>
-                
-                <!-- Coração -->
-                <path class="draw-path" d="M 50 30 C 35 15 15 25 20 45 C 23 58 35 65 45 70" stroke="url(#logo-grad)" stroke-width="4.5" stroke-linecap="round" />
-                
-                <!-- Mão / Palma e Dedo -->
-                <path class="draw-path" d="M 15 65 C 30 85 65 85 85 60 C 90 55 85 45 80 50 C 70 60 55 65 40 60" stroke="url(#logo-grad)" stroke-width="4.5" stroke-linecap="round" style="animation-delay: 0.2s" />
-                
-                <!-- Mão / Linha Inferior -->
-                <path class="draw-path" d="M 25 80 C 40 90 60 85 75 70" stroke="url(#logo-grad)" stroke-width="4.5" stroke-linecap="round" style="animation-delay: 0.4s" />
-                
-                <!-- Pílula -->
-                <g transform="translate(55, 45) rotate(50) translate(-55, -45)">
-                    <rect class="draw-path" x="40" y="15" width="30" height="60" rx="15" stroke="url(#logo-grad)" stroke-width="4.5" style="animation-delay: 0.5s" />
-                    <line class="draw-path" x1="40" y1="45" x2="70" y2="45" stroke="url(#logo-grad)" stroke-width="4.5" style="animation-delay: 0.7s" />
-                    <path class="draw-fill" d="M 40 45 L 70 45 L 70 60 A 15 15 0 0 1 40 60 Z" fill="url(#logo-grad)" />
-                    <path class="draw-path" d="M 47 25 A 8 8 0 0 1 60 20" stroke="#ffffff" stroke-width="3" stroke-linecap="round" style="animation-delay: 0.9s" />
-                </g>
-            </svg>
-        </div>
-    `
-};
-
 createApp({
     setup() {
         // --- ESTADO DE AUTENTICAÇÃO ---
@@ -46,7 +14,6 @@ createApp({
         const relatorios = ref([]);
         const searchQuery = ref('');
         const currentModal = ref(null);
-        const isLoading = ref(false);
 
         // --- SIDEBAR ---
         const showSidebar = ref(true);
@@ -82,7 +49,7 @@ createApp({
         };
 
         // --- FORMULÁRIOS ---
-        const formMedicamento = ref({ id: null, nome: '', dosagem: '', quantidade: 0, estoque_critico: 10, tipo: 'COMPRIMIDO', unidade_dosagem: 'MG', quantidade_por_caixa: 1, fabricante: '', lote: '', validade: '' });
+        const formMedicamento = ref({ nome: '', dosagem: '', quantidade: 0, estoque_critico: 10, tipo: 'COMPRIMIDO', unidade_dosagem: 'MG', quantidade_por_caixa: 1, fabricante: '', lote: '', validade: '' });
         const formPaciente = ref({ id: null, nome: '', documento: '', endereco: '', telefone: '' });
         const formEntrada = ref({ medicamentoId: '', quantidade: 1, qtd_caixas: 1, unidades_por_caixa: 1, fabricante: '', lote: '', validade: '', tipo: 'COMPRIMIDO', unidade_dosagem: 'MG' });
         const formSaida = ref({ medicamentoId: '', pacienteId: '', quantidade: 1, endereco: '', telefone: '', crm: '', nomeMedico: '' });
@@ -149,7 +116,6 @@ createApp({
 
         // --- MÉTODOS DE DADOS (API) ---
         const loadData = async () => {
-            isLoading.value = true;
             try {
                 if (typeof ApiService !== 'undefined') {
                     // Carrega ambas as listas em paralelo para manter o sidebar sincronizado
@@ -168,46 +134,21 @@ createApp({
                 console.error("Erro ao carregar dados:", error);
                 medicamentos.value = [];
                 pacientes.value = [];
-            } finally {
-                isLoading.value = false;
             }
         };
 
         const saveMedicamento = async () => {
-            isLoading.value = true;
-            try {
-                await ApiService.saveMedicamento(formMedicamento.value);
-                medicamentos.value = await ApiService.getMedicamentos();
-                closeModal();
-                formMedicamento.value = { id: null, nome: '', dosagem: '', quantidade: 0, estoque_critico: 10, tipo: 'COMPRIMIDO', unidade_dosagem: 'MG', quantidade_por_caixa: 1, fabricante: '', lote: '', validade: '' };
-            } finally { isLoading.value = false; }
-        };
-
-        const editMedicamento = (med) => {
-            formMedicamento.value = { ...med };
-            openModal('novo-medicamento');
-        };
-
-        const deleteMedicamento = async (id) => {
-            if (confirm('Tem certeza que deseja excluir este medicamento? Esta ação não pode ser desfeita.')) {
-                isLoading.value = true;
-                try {
-                    const res = await ApiService.deleteMedicamento(id);
-                    if (res) {
-                        medicamentos.value = await ApiService.getMedicamentos();
-                    }
-                } finally { isLoading.value = false; }
-            }
+            await ApiService.saveMedicamento(formMedicamento.value);
+            await loadData();
+            closeModal();
         };
 
         const savePaciente = async () => {
-            isLoading.value = true;
-            try {
-                await ApiService.savePaciente(formPaciente.value);
-                pacientes.value = await ApiService.getPacientes();
-                closeModal();
-                formPaciente.value = { id: null, nome: '', documento: '', endereco: '', telefone: '' };
-            } finally { isLoading.value = false; }
+            await ApiService.savePaciente(formPaciente.value);
+            // Atualiza lista de pacientes
+            pacientes.value = await ApiService.getPacientes();
+            closeModal();
+            formPaciente.value = { id: null, nome: '', documento: '', endereco: '', telefone: '' };
         };
 
         const editPaciente = (pac) => {
@@ -217,13 +158,10 @@ createApp({
 
         const deletePaciente = async (id) => {
             if (confirm('Tem certeza que deseja excluir este paciente? Esta ação não pode ser desfeita.')) {
-                isLoading.value = true;
-                try {
-                    const res = await ApiService.deletePaciente(id);
-                    if (res) {
-                        pacientes.value = await ApiService.getPacientes();
-                    }
-                } finally { isLoading.value = false; }
+                const res = await ApiService.deletePaciente(id);
+                if (res) {
+                    pacientes.value = await ApiService.getPacientes();
+                }
             }
         };
 
@@ -240,41 +178,36 @@ createApp({
         });
 
         const registrarEntrada = async () => {
-            isLoading.value = true;
-            try {
-                const total = formEntrada.value.qtd_caixas * formEntrada.value.unidades_por_caixa;
-                await ApiService.updateEstoque(formEntrada.value.medicamentoId, total, 'entrada', null, {
-                    fabricante: formEntrada.value.fabricante,
-                    lote: formEntrada.value.lote,
-                    validade: formEntrada.value.validade,
-                    tipo_med: formEntrada.value.tipo,
-                    unidade_dosagem: formEntrada.value.unidade_dosagem,
-                    quantidade_por_caixa: formEntrada.value.unidades_por_caixa
-                });
-                await loadData();
-                closeModal();
-                formEntrada.value = { medicamentoId: '', quantidade: 1, qtd_caixas: 1, unidades_por_caixa: 1, fabricante: '', lote: '', validade: '', tipo: 'COMPRIMIDO', unidade_dosagem: 'MG' };
-            } finally { isLoading.value = false; }
+            const total = formEntrada.value.qtd_caixas * formEntrada.value.unidades_por_caixa;
+            await ApiService.updateEstoque(formEntrada.value.medicamentoId, total, 'entrada', null, {
+                fabricante: formEntrada.value.fabricante,
+                lote: formEntrada.value.lote,
+                validade: formEntrada.value.validade,
+                tipo_med: formEntrada.value.tipo,
+                unidade_dosagem: formEntrada.value.unidade_dosagem,
+                quantidade_por_caixa: formEntrada.value.unidades_por_caixa
+            });
+            await loadData();
+            closeModal();
+            // Reset form
+            formEntrada.value = { medicamentoId: '', quantidade: 1, qtd_caixas: 1, unidades_por_caixa: 1, fabricante: '', lote: '', validade: '', tipo: 'COMPRIMIDO', unidade_dosagem: 'MG' };
         };
 
         const registrarSaida = async () => {
-            isLoading.value = true;
-            try {
-                await ApiService.updateEstoque(
-                    formSaida.value.medicamentoId, 
-                    formSaida.value.quantidade, 
-                    'saida', 
-                    formSaida.value.pacienteId,
-                    {
-                        endereco: formSaida.value.endereco,
-                        telefone: formSaida.value.telefone,
-                        crm: formSaida.value.crm,
-                        nome_medico: formSaida.value.nomeMedico
-                    }
-                );
-                await loadData();
-                closeModal();
-            } finally { isLoading.value = false; }
+            await ApiService.updateEstoque(
+                formSaida.value.medicamentoId, 
+                formSaida.value.quantidade, 
+                'saida', 
+                formSaida.value.pacienteId,
+                {
+                    endereco: formSaida.value.endereco,
+                    telefone: formSaida.value.telefone,
+                    crm: formSaida.value.crm,
+                    nome_medico: formSaida.value.nomeMedico
+                }
+            );
+            await loadData();
+            closeModal();
         };
 
         const gerarRelatorio = async () => {
@@ -302,32 +235,26 @@ createApp({
                 dadosJson = movs;
             }
 
-            isLoading.value = true;
-            try {
-                const novoRel = await ApiService.saveRelatorio({
-                    titulo,
-                    tipo: t,
-                    conteudo: JSON.stringify(dadosJson)
-                });
+            const novoRel = await ApiService.saveRelatorio({
+                titulo,
+                tipo: t,
+                conteudo: JSON.stringify(dadosJson)
+            });
 
-                if (novoRel) {
-                    await loadData();
-                    closeModal();
-                    abrirRelatorio(novoRel.id);
-                }
-            } finally { isLoading.value = false; }
+            if (novoRel) {
+                await loadData();
+                closeModal();
+                abrirRelatorio(novoRel.id);
+            }
         };
 
         const abrirRelatorio = async (id) => {
-            isLoading.value = true;
-            try {
-                const rel = await ApiService.getRelatorio(id);
-                if (rel) {
-                    rel.conteudoData = JSON.parse(rel.conteudo);
-                    relatorioAberto.value = rel;
-                    openModal('visualizar-relatorio');
-                }
-            } finally { isLoading.value = false; }
+            const rel = await ApiService.getRelatorio(id);
+            if (rel) {
+                rel.conteudoData = JSON.parse(rel.conteudo);
+                relatorioAberto.value = rel;
+                openModal('visualizar-relatorio');
+            }
         };
 
         const printRelatorio = () => {
@@ -344,7 +271,7 @@ createApp({
 
         // --- RETORNO PARA O TEMPLATE (CRUCIAL PARA FUNCIONAR) ---
         return {
-            isAuthenticated, isLoggingIn, loginForm, handleLogin, handleLogout, isLoading,
+            isAuthenticated, isLoggingIn, loginForm, handleLogin, handleLogout,
             medicamentos, pacientes, movimentos, searchQuery, filteredMedicamentos, filteredPacientes,
             medicamentosEmAlerta, medicamentosEmFalta, selectedPacienteInfo,
             showSidebar, activeSideTab, toggleSidebar, setSideTab,
@@ -352,10 +279,8 @@ createApp({
             currentModal, openModal, closeModal,
             formMedicamento, formPaciente, formEntrada, formSaida, formRelatorio, relatorioAberto,
             relatorios, gerarRelatorio, abrirRelatorio, printRelatorio,
-            saveMedicamento, editMedicamento, deleteMedicamento, savePaciente, editPaciente, deletePaciente, registrarEntrada, registrarSaida,
+            saveMedicamento, savePaciente, editPaciente, deletePaciente, registrarEntrada, registrarSaida,
             calcularTotalEntrada, calcularCaixasSaida
         };
     }
-})
-.component('caps-logo', CapsLogo)
-.mount('#app');
+}).mount('#app');

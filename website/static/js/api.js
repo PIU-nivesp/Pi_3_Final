@@ -39,20 +39,6 @@ class ApiService {
         }
     }
 
-    static async deleteMedicamento(id) {
-        try {
-            const response = await fetch(`/api/medicamentos/deletar/${id}/`, {
-                method: 'POST',
-                headers: { 'X-CSRFToken': window.CSRF_TOKEN }
-            });
-            if (!response.ok) throw new Error('Erro ao deletar medicamento');
-            return await response.json();
-        } catch (error) {
-            console.error("Erro na API:", error);
-            return null;
-        }
-    }
-
     // --- PACIENTES ---
     static async getPacientes() {
         try {
