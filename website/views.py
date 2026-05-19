@@ -175,8 +175,31 @@ def api_update_estoque(request):
 def run_migrations_view(request):
     out = StringIO()
     try:
+        # Tenta aplicar as migrations
         call_command('showmigrations', stdout=out)
         call_command('migrate', interactive=False, stdout=out)
+        
+        # Garante que as colunas existam executando SQL bruto (útil se a migration foi marcada como aplicada mas falhou)
+        from django.db import connection
+        with connection.cursor() as cursor:
+            try:
+                cursor.execute("ALTER TABLE website_paciente ADD COLUMN medicamentos_em_uso text;")
+                out.write("\nAdicionada coluna medicamentos_em_uso.")
+            except Exception as e:
+                out.write(f"\nColuna medicamentos_em_uso possivelmente ja existe: {str(e)}")
+                
+            try:
+                cursor.execute("ALTER TABLE website_paciente ADD COLUMN medico_prescritor varchar(150);")
+                out.write("\nAdicionada coluna medico_prescritor.")
+            except Exception as e:
+                out.write(f"\nColuna medico_prescritor possivelmente ja existe: {str(e)}")
+                
+            try:
+                cursor.execute("ALTER TABLE website_paciente ADD COLUMN crm_medico varchar(50);")
+                out.write("\nAdicionada coluna crm_medico.")
+            except Exception as e:
+                out.write(f"\nColuna crm_medico possivelmente ja existe: {str(e)}")
+
         result = out.getvalue()
         return JsonResponse({'status': 'success', 'output': result})
     except Exception as e:
