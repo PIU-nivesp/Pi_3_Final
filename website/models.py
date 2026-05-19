@@ -28,6 +28,8 @@ class Paciente(models.Model):
     endereco = models.CharField(max_length=255, blank=True, null=True, verbose_name="Endereço")
     telefone = models.CharField(max_length=20, blank=True, null=True, verbose_name="Telefone de Contato")
     medicamentos_em_uso = models.TextField(blank=True, null=True, verbose_name="Medicamentos em Uso")
+    medico_prescritor = models.CharField(max_length=150, blank=True, null=True, verbose_name="Médico Prescritor")
+    crm_medico = models.CharField(max_length=50, blank=True, null=True, verbose_name="CRM do Médico")
 
     def __str__(self):
         return self.nome
