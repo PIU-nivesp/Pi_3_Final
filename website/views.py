@@ -199,6 +199,12 @@ def run_migrations_view(request):
                 out.write("\nAdicionada coluna crm_medico.")
             except Exception as e:
                 out.write(f"\nColuna crm_medico possivelmente ja existe: {str(e)}")
+                
+            try:
+                cursor.execute("ALTER TABLE website_medicamento ADD COLUMN fornecedor varchar(150);")
+                out.write("\nAdicionada coluna fornecedor na tabela medicamento.")
+            except Exception as e:
+                out.write(f"\nColuna fornecedor possivelmente ja existe: {str(e)}")
 
         result = out.getvalue()
         return JsonResponse({'status': 'success', 'output': result})
