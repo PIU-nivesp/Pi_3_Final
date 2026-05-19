@@ -68,7 +68,7 @@ createApp({
         };
 
         // --- FORMULÁRIOS ---
-        const formMedicamento = ref({ id: null, nome: '', dosagem: '', quantidade: 0, estoque_critico: 10, tipo: 'COMPRIMIDO', unidade_dosagem: 'MG', quantidade_por_caixa: 1, fabricante: '', lote: '', validade: '' });
+        const formMedicamento = ref({ id: null, nome: '', dosagem: '', quantidade: 0, estoque_critico: 10, tipo: 'COMPRIMIDO', unidade_dosagem: 'MG', quantidade_por_caixa: 1, fabricante: '', lote: '', validade: '', fornecedor: '' });
         const formPaciente = ref({ id: null, nome: '', documento: '', endereco: '', telefone: '', medicamentos_em_uso: '', medico_prescritor: '', crm_medico: '' });
         const formEntrada = ref({ medicamentoId: '', quantidade: 1, qtd_caixas: 1, unidades_por_caixa: 1, fabricante: '', lote: '', validade: '', tipo: 'COMPRIMIDO', unidade_dosagem: 'MG' });
         const formSaida = ref({ medicamentoId: '', pacienteId: '', quantidade: 1, endereco: '', telefone: '' });
@@ -122,7 +122,7 @@ createApp({
         // --- MÉTODOS DE MODAL ---
         const openModal = (tipo) => { 
             if (tipo === 'novo-medicamento' && !formMedicamento.value.id) {
-                formMedicamento.value = { id: null, nome: '', dosagem: '', quantidade: 0, estoque_critico: 10, tipo: 'COMPRIMIDO', unidade_dosagem: 'MG', quantidade_por_caixa: 1, fabricante: '', lote: '', validade: '' };
+                formMedicamento.value = { id: null, nome: '', dosagem: '', quantidade: 0, estoque_critico: 10, tipo: 'COMPRIMIDO', unidade_dosagem: 'MG', quantidade_por_caixa: 1, fabricante: '', lote: '', validade: '', fornecedor: '' };
             }
             if (tipo === 'novo-paciente' && !formPaciente.value.id) {
                 formPaciente.value = { id: null, nome: '', documento: '', endereco: '', telefone: '', medicamentos_em_uso: '', medico_prescritor: '', crm_medico: '' };
@@ -173,7 +173,7 @@ createApp({
             await ApiService.saveMedicamento(formMedicamento.value);
             await loadData();
             closeModal();
-            formMedicamento.value = { id: null, nome: '', dosagem: '', quantidade: 0, estoque_critico: 10, tipo: 'COMPRIMIDO', unidade_dosagem: 'MG', quantidade_por_caixa: 1, fabricante: '', lote: '', validade: '' };
+            formMedicamento.value = { id: null, nome: '', dosagem: '', quantidade: 0, estoque_critico: 10, tipo: 'COMPRIMIDO', unidade_dosagem: 'MG', quantidade_por_caixa: 1, fabricante: '', lote: '', validade: '', fornecedor: '' };
         };
 
         const editMedicamento = (med) => {

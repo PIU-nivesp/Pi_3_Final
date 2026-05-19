@@ -14,6 +14,7 @@ class Medicamento(models.Model):
     fabricante = models.CharField(max_length=100, blank=True, null=True, verbose_name="Fabricante")
     lote = models.CharField(max_length=50, blank=True, null=True, verbose_name="Lote")
     validade = models.DateField(blank=True, null=True, verbose_name="Validade")
+    fornecedor = models.CharField(max_length=150, blank=True, null=True, verbose_name="Fornecedor")
 
     def __str__(self):
         return f"{self.nome} ({self.dosagem})"

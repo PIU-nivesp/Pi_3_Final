@@ -54,6 +54,7 @@ def api_save_medicamento(request):
             med.quantidade_por_caixa = data.get('quantidade_por_caixa', med.quantidade_por_caixa)
             med.fabricante = data.get('fabricante', med.fabricante)
             med.lote = data.get('lote', med.lote)
+            med.fornecedor = data.get('fornecedor', med.fornecedor)
             if 'validade' in data:
                 med.validade = data.get('validade') if data.get('validade') else None
             med.save()
@@ -68,6 +69,7 @@ def api_save_medicamento(request):
                 quantidade_por_caixa=data.get('quantidade_por_caixa', 1),
                 fabricante=data.get('fabricante'),
                 lote=data.get('lote'),
+                fornecedor=data.get('fornecedor'),
                 validade=data.get('validade') if data.get('validade') else None
             )
         return JsonResponse({'status': 'ok', 'id': med.id})
