@@ -53,8 +53,6 @@ class Movimentacao(models.Model):
     # Novos campos solicitados
     endereco = models.CharField(max_length=255, blank=True, null=True, verbose_name="Endereço")
     telefone_contato = models.CharField(max_length=20, blank=True, null=True, verbose_name="Telefone de Contato")
-    crm = models.CharField(max_length=20, blank=True, null=True, verbose_name="CRM")
-    nome_medico = models.CharField(max_length=100, blank=True, null=True, verbose_name="Nome do Médico")
     
     # Detalhes da Entrada (Batch)
     fabricante = models.CharField(max_length=100, blank=True, null=True, verbose_name="Fabricante")

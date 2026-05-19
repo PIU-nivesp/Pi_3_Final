@@ -163,8 +163,6 @@ def api_update_estoque(request):
             tipo=db_tipo,
             endereco=data.get('endereco') or (pac.endereco if pac else ''),
             telefone_contato=data.get('telefone') or (pac.telefone if pac else ''),
-            crm=data.get('crm'),
-            nome_medico=data.get('nome_medico'),
             fabricante=data.get('fabricante'),
             lote=data.get('lote'),
             validade=data.get('validade') if data.get('validade') else None

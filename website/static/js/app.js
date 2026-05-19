@@ -71,7 +71,7 @@ createApp({
         const formMedicamento = ref({ id: null, nome: '', dosagem: '', quantidade: 0, estoque_critico: 10, tipo: 'COMPRIMIDO', unidade_dosagem: 'MG', quantidade_por_caixa: 1, fabricante: '', lote: '', validade: '' });
         const formPaciente = ref({ id: null, nome: '', documento: '', endereco: '', telefone: '', medicamentos_em_uso: '', medico_prescritor: '', crm_medico: '' });
         const formEntrada = ref({ medicamentoId: '', quantidade: 1, qtd_caixas: 1, unidades_por_caixa: 1, fabricante: '', lote: '', validade: '', tipo: 'COMPRIMIDO', unidade_dosagem: 'MG' });
-        const formSaida = ref({ medicamentoId: '', pacienteId: '', quantidade: 1, endereco: '', telefone: '', crm: '', nomeMedico: '' });
+        const formSaida = ref({ medicamentoId: '', pacienteId: '', quantidade: 1, endereco: '', telefone: '' });
         const formRelatorio = ref({ tipo: '1', pacienteId: '', medicamentoId: '' });
         const relatorioAberto = ref(null);
 
@@ -248,9 +248,7 @@ createApp({
                 formSaida.value.pacienteId,
                 {
                     endereco: formSaida.value.endereco,
-                    telefone: formSaida.value.telefone,
-                    crm: formSaida.value.crm,
-                    nome_medico: formSaida.value.nomeMedico
+                    telefone: formSaida.value.telefone
                 }
             );
             await loadData();
