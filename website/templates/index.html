@@ -557,9 +557,9 @@
                             </div>
                         </div>
 
-                        <div class="grid grid-cols-2 gap-4">
+                        <div class="grid grid-cols-2 gap-4 items-end">
                             <div>
-                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1 px-1">Quantidade por Caixa (Unidades)</label>
+                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1 px-1">Qtd. por Caixa (Unid.)</label>
                                 <input v-model.number="formMedicamento.quantidade_por_caixa" type="number" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-md outline-none">
                             </div>
                             <div>
@@ -568,13 +568,13 @@
                             </div>
                         </div>
 
-                        <div class="grid grid-cols-2 gap-4">
+                        <div class="grid grid-cols-2 gap-4 items-end">
                             <div>
                                 <label class="block text-xs font-bold text-gray-500 uppercase mb-1 px-1">Lote</label>
                                 <input v-model="formMedicamento.lote" type="text" placeholder="Número do Lote" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-md outline-none">
                             </div>
-                            <div class="relative">
-                                <label class="absolute -top-2 left-2 px-1 bg-white text-[10px] font-bold text-gray-400">Validade</label>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1 px-1">Validade</label>
                                 <input v-model="formMedicamento.validade" type="date" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-md outline-none">
                             </div>
                         </div>
