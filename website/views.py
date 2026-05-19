@@ -171,6 +171,7 @@ def api_update_estoque(request):
 def run_migrations_view(request):
     out = StringIO()
     try:
+        call_command('showmigrations', stdout=out)
         call_command('migrate', interactive=False, stdout=out)
         result = out.getvalue()
         return JsonResponse({'status': 'success', 'output': result})
